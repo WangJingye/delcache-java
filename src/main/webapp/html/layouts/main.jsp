@@ -24,7 +24,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span></button>
-                    <a class="navbar-brand" href="/">新昌运输系统</a></div>
+                    <a class="navbar-brand" href="/">后台管理系统</a></div>
                 <div id="w0-collapse" class="collapse navbar-collapse">
                     <ul id="w1" class="navbar-nav navbar-left nav">
                         <li><a href="/index.php?r=system%2Fmenu%2Findex">系统管理</a></li>
