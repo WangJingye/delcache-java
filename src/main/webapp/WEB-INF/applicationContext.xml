@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 注解扫描包 -->
+    <context:component-scan base-package="com.delcache"/>
+
+    <!-- 开启注解 -->
+    <mvc:annotation-driven/>
+
+    <!-- 引入属性文件 -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+
+    <!-- 配置数据源  这里class可以使用不同的驱动-->
+    <bean id="dataSource" name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="5"/>
+        <!-- 初始化建立的连接数 -->
+        <property name="initialPoolSize" value="10"/>
+        <!-- 最大空闲时间，120秒内未被使用的连接将被丢弃 -->
+        <property name="maxIdleTime" value="120"/>
+        <!-- 当连接池耗尽，且未达到最大连接数时，一次获取的连接数 -->
+        <property name="acquireIncrement" value="2"/>
+        <!-- 空闲检查时间间隔， 每隔120秒检查连接池里的空闲连接 ，单位是秒-->
+        <property name="idleConnectionTestPeriod" value="60"/>
+    </bean>
+
+
+    <!-- 配置hibernate session工厂 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="current_session_context_class">thread</prop>
+                <prop key="hibernate.connection.driver_class">${jdbc.driver}</prop>
+                <prop key="javax.persistence.validation.mode">none</prop>
+            </props>
+        </property>
+
+        <!-- 自动扫描注解方式配置的hibernate类文件 -->
+        <property name="packagesToScan">
+            <list>
+                <!-- 此处与entity实体路径对应 -->
+                <value>com.delcache.common.entity</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 注解方式配置事物 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="persistenceExceptionTranslationPostProcessor"
+          class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+
+    <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 默认编码 -->
+        <property name="defaultEncoding" value="utf-8"/>
+        <!-- 文件大小最大值 -->
+        <property name="maxUploadSize" value="10485760000"/>
+        <!-- 内存中的最大值 -->
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+    <bean id="ViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/html/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+</beans>
