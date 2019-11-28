@@ -1,5 +1,6 @@
 package com.delcache.common.entity;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -19,8 +20,9 @@ public class Role extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "desc")
-    private String desc;
+    @ColumnDefault(value = "")
+    @Column(name = "remark")
+    private String remark;
 
     @Column(name = "status")
     private int status;
@@ -47,12 +49,12 @@ public class Role extends BaseEntity {
         this.name = name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public int getStatus() {

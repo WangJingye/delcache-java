@@ -17,7 +17,7 @@
 </body>
 <script src="/static/js/jquery.js"></script>
 <script src="/static/js/jquery.validate.js"></script>
-<script src="/static/plugin/bootstrap/bootstrap.js"></script>
+<script src="/static/plugin/bootstrap/js/bootstrap.js"></script>
 <script src="/static/js/ztree.core.js"></script>
 <script src="/static/js/ztree.excheck.js"></script>
 <script src="/static/js/select2.min.js"></script>

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+@Transactional
 @Repository
 public class BaseDao {
 
@@ -24,6 +24,12 @@ public class BaseDao {
     public Object find(String hql) {
         Session factory = sessionFactory.getCurrentSession();
         Query query = factory.createQuery(hql).setMaxResults(1);
+        return query.uniqueResult();
+    }
+
+    public Object find(String sql, Class clazz) {
+        Session factory = sessionFactory.getCurrentSession();
+        Query query = factory.createNativeQuery(sql, clazz);
         return query.uniqueResult();
     }
 
@@ -69,9 +75,34 @@ public class BaseDao {
         Query query = factory.createQuery(hql);
         return query.executeUpdate();
     }
+
+    @Transactional(readOnly = false)
+    public void multiInsert(List entities) {
+        Session factory = sessionFactory.getCurrentSession();
+        for (int i = 0; i < entities.size(); i++) {
+            factory.save(entities.get(i)); // 保存对象
+            // 批插入的对象立即写入数据库并释放内存
+            if (i % 20 == 0) {
+                factory.flush();
+                factory.clear();
+            }
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public void delete(String hql) {
+        Session factory = sessionFactory.getCurrentSession();
+        Query query = factory.createQuery(hql);
+        query.executeUpdate();
+    }
+
     public int updateSql(String sql) {
         Session factory = sessionFactory.getCurrentSession();
         Query query = factory.createNativeQuery(sql);
         return query.executeUpdate();
+    }
+
+    public SessionFactory getSessionFactory() {
+        return this.sessionFactory;
     }
 }

@@ -4,20 +4,42 @@ $(function () {
         $(this).valid();
     });
     jQuery.validator.setDefaults({
-        errorClass: "invalid-feedback",
-        errorElement: "div",
+        errorClass: "help-block",
+        errorElement: "span",
         highlight: function (element, errorClass, validClass) {
+            $(element).parents('.form-group').removeClass('has-success').addClass('has-error').removeClass("has-feedback").addClass("has-feedback");
             if ($(element).hasClass('select2')) {
-                $(element).next('span').find('.select2-selection').removeClass('is-valid').addClass('is-invalid');
+                if ($(element).parents('.form-group').find('.form-control-feedback').get(0)) {
+                    $(element).parents('.form-group').find('.form-control-feedback').removeClass("glyphicon-ok").addClass("glyphicon-remove")
+                } else {
+                    $(element).next('span').find('.select2-selection').after('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
+                }
             } else {
-                $(element).parents('.form-group').find('input,select').removeClass('is-valid').addClass('is-invalid');
+                if ($(element).attr('type') != 'radio' && $(element).attr('type') != 'checkbox') {
+                    if ($(element).parents('.form-group').find('.form-control-feedback').get(0)) {
+                        $(element).parents('.form-group').find('.form-control-feedback').removeClass("glyphicon-ok").addClass("glyphicon-remove")
+                    } else {
+                        $(element).after('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
+                    }
+                }
             }
         },
         unhighlight: function (element, errorClass, validClass) {
+            $(element).parents('.form-group').removeClass('has-error').addClass('has-success').removeClass("has-feedback").addClass("has-feedback");
             if ($(element).hasClass('select2')) {
-                $(element).next('span').find('.select2-selection').removeClass('is-invalid').addClass('is-valid');
+                if ($(element).parents('.form-group').find('.form-control-feedback').get(0)) {
+                    $(element).parents('.form-group').find('.form-control-feedback').removeClass("glyphicon-remove").addClass("glyphicon-ok")
+                } else {
+                    $(element).next('span').find('.select2-selection').after('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+                }
             } else {
-                $(element).parents('.form-group').find('input,select').removeClass('is-invalid').addClass('is-valid');
+                if ($(element).attr('type') != 'radio' && $(element).attr('type') != 'checkbox') {
+                    if ($(element).parents('.form-group').find('.form-control-feedback').get(0)) {
+                        $(element).parents('.form-group').find('.form-control-feedback').removeClass("glyphicon-remove").addClass("glyphicon-ok")
+                    } else {
+                        $(element).after('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+                    }
+                }
             }
         },
         errorPlacement: function (error, element) {
@@ -45,14 +67,17 @@ $(function () {
                 } else {
                     var imgHtml = '<img src="' + e.target.result + '">';
                     box.find('.fileinput-button').before(imgHtml);
-                    var btnHtml = '<div class="file-remove-btn"><div class="btn btn-sm btn-outline-danger" style="font-size: 0.5rem;">删除</div></div>';
+                    var btnHtml = '<div class="file-remove-btn"><div class="btn btn-sm btn-danger" style="font-size: 0.5rem;">删除</div></div>';
                     box.find('.fileinput-button').after(btnHtml);
                     box.find('.plus-symbol').hide();
                 }
             };
             if ($this.hasClass('add-new') && maxNumber > nowNumber) {
                 var newBox = box.clone();
+                var max = (parseInt($this.attr('data-max')) + 1).toString();
+                var keyName = $this.attr('data-name');
                 box.after('<div class="fileinput-box">' + newBox.html() + '</div>');
+                box.parents('.fileinput-box-list').find('.fileinput-input').last().attr('name', keyName + '[' + max + ']');
             }
             if ($this[0].files.length) {
                 reader.readAsDataURL($this[0].files[0]);
@@ -101,6 +126,18 @@ $(function () {
     });
 });
 
+function POST(url, args, callback) {
+    $.loading('show');
+    $.post(stringTrim(url, '.html'), args, function (res) {
+        $.loading('hide');
+        if (res.code == 200) {
+            callback(res);
+        } else {
+            $.error(res.message);
+        }
+    }, 'json');
+}
+
 Date.prototype.Format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份
@@ -115,4 +152,19 @@ Date.prototype.Format = function (fmt) {
     for (var k in o)
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+function stringTrim(str, element) {
+    elementLength = element.length;
+    beginIndexFlag = true;
+    endIndexFlag = true;
+    do {
+        beginIndex = str.indexOf(element) == 0 ? elementLength : 0;
+        endIndex = str.lastIndexOf(element);
+        endIndex = endIndex + elementLength == str.length ? endIndex : str.length;
+        str = str.substr(beginIndex, endIndex);
+        beginIndexFlag = (str.indexOf(element) == 0);
+        endIndexFlag = (str.lastIndexOf(element) + elementLength == str.length);
+    } while (beginIndexFlag || endIndexFlag);
+    return str;
 }

@@ -10,11 +10,12 @@ jQuery.extend({
         }
         var alertC = 'alert' + this.count;
         this.count++;
-        var html = '<div class="alert ' + this.option.successClass + ' alert-dismissible fade show ' + alertC + '" role="alert">' +
-            '<span>' + msg + '</span>' +
+        var html = '<div class="alert ' + this.option.successClass + ' alert-dismissible ' + alertC + '" role="alert">' +
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
             '<span aria-hidden="true">×</span>' +
-            '</button></div>';
+            '</button>' +
+            '<span>' + msg + '</span>' +
+            '</div>';
         var popupContent = $('body').find('.popup-content');
         if (!$('body').find('.popup-content').get(0)) {
             $('body').append('<div class="popup-content"></div>');
@@ -35,7 +36,7 @@ jQuery.extend({
         }
         var alertC = 'alert' + this.count;
         this.count++;
-        var html = '<div class="alert ' + this.option.errorClass + ' alert-dismissible fade show ' + alertC + '" role="alert">' +
+        var html = '<div class="alert ' + this.option.errorClass + ' alert-dismissible ' + alertC + '" role="alert">' +
             '<span>' + msg + '</span>' +
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
             '<span aria-hidden="true">×</span>' +
@@ -64,7 +65,7 @@ jQuery.extend({
             if (!$('#loadingModel').get(0)) {
                 var html = '<div id="loadingModel" class="modal">' +
                     '<div class="modal-body">' +
-                    '<span><img src="/static/images/load.gif"/></span>' +
+                    '<span><img src="/static/image/load.gif"/></span>' +
                     '<span style="color:red;font-size:15px;">' + msg + '</span>' +
                     '</div></div>';
                 $('body').append(html);

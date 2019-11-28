@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <sitemesh>
-    <mapping path="/generate/*" exclue="true"/>
+    <mapping path="/error*" exclue="true"/>
+    <mapping path="/login*" decorator="/html/layouts/login.jsp"/>
+    <mapping path="/404*" decorator="/html/layouts/empty.jsp"/>
     <mapping path="/*" decorator="/html/layouts/main.jsp"/>
     <content-processor>
-        <tag-rule-bundle class="com.delcache.vender.ExpandTagRuleBundle"/>
+        <tag-rule-bundle class="com.delcache.extend.ExpandTagRuleBundle"/>
     </content-processor>
 </sitemesh>
