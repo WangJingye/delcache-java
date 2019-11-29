@@ -1,5 +1,7 @@
 $(function () {
-    $('.select2').select2();
+    if ($('.select2').get(0)) {
+        $('.select2').select2();
+    }
     $('form .select2,.select').on('change', function () {
         $(this).valid();
     });
@@ -47,7 +49,9 @@ $(function () {
                 error.insertAfter(element.parents('.form-radio-group'));
             } else if (element.hasClass('select2')) {
                 error.insertAfter(element.next('span'));
-            } else {
+            } else if(element.parent().hasClass('input-group')){
+                error.insertAfter(element.parent());
+            }else{
                 error.insertAfter(element);
             }
         }
