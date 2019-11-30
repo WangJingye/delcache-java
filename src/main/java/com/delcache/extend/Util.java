@@ -215,4 +215,7 @@ public class Util {
         return res;
     }
 
+    public static int time() {
+        return (int) (System.currentTimeMillis() / 1000);
+    }
 }

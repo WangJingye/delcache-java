@@ -3,6 +3,7 @@ package com.delcache.backend.system.controller;
 import com.delcache.backend.common.BaseController;
 import com.delcache.common.entity.Admin;
 import com.delcache.extend.Encrypt;
+import com.delcache.extend.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -39,7 +40,7 @@ public class PublicController extends BaseController {
             if (admin.getStatus() == 0) {
                 throw new Exception("您的账号已禁用，请联系管理员～");
             }
-            admin.setLastLoginTime((int) (System.currentTimeMillis() / 1000));
+            admin.setLastLoginTime(Util.time());
             db.table(Admin.class).save(admin);
             request.getSession().setAttribute("user", admin);
             return this.success("登录成功");

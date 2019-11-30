@@ -1,6 +1,5 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -29,23 +28,18 @@ public class Menu extends BaseEntity {
     @Column(name = "icon")
     private String icon;
 
-    @ColumnDefault(value = "0")
     @Column(name = "parent_id")
     private int parentId;
 
-    @ColumnDefault(value = "0")
     @Column(name = "sort")
     private int sort;
 
-    @ColumnDefault(value = "1")
     @Column(name = "status")
     private int status;
 
-    @ColumnDefault(value = "0")
     @Column(name = "create_time", updatable = false)
     private int createTime;
 
-    @ColumnDefault(value = "0")
     @Column(name = "update_time")
     private int updateTime;
 

@@ -5,7 +5,12 @@ import com.delcache.common.entity.BaseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.ContextLoader;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class Db {
@@ -150,8 +155,9 @@ public class Db {
     public Object find() {
         return dao.find(this.hql());
     }
+
     public Object find(String sql) {
-        return dao.find(sql,this.clazz);
+        return dao.find(sql, this.clazz);
     }
 
     public Object findAll() {
@@ -179,6 +185,43 @@ public class Db {
      * @param t
      */
     public void save(BaseEntity t) {
+        Class clazz = t.getClass();
+        String primaryKey = this.getPrimaryKey(clazz);
+
+        try {
+            boolean isNew = false;
+            Field[] fields = clazz.getDeclaredFields();
+            if (!primaryKey.isEmpty()) {
+                for (Field field : fields) {
+                    Id id = field.getAnnotation(Id.class);
+                    if (id == null) {
+                        continue;
+                    }
+                    field.setAccessible(true);
+                    PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
+                    Method setMethod = pd.getReadMethod();
+                    Object res = setMethod.invoke(t);
+                    if (Integer.parseInt(res.toString()) == 0) {
+                        isNew = true;
+                        break;
+                    }
+                }
+                for (Field field : fields) {
+                    Column col = field.getAnnotation(Column.class);
+                    if (col == null) {
+                        continue;
+                    }
+                    if (isNew && col.name().equals("create_time")) {
+                        this.setObjectFieldValue(t, field, Util.time());
+                    }
+                    if (col.name().equals("update_time")) {
+                        this.setObjectFieldValue(t, field, Util.time());
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
         dao.save(t);
     }
 
@@ -187,17 +230,20 @@ public class Db {
      */
     public void update(Map<String, Object> map) {
         String sql = "UPDATE " + this.clazz.getName() + " SET ";
-        String setSql = "";
+        StringBuilder setSql = new StringBuilder();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String value = (String) entry.getValue();
-            if (StringUtils.isEmpty(value)) {
-                value = "";
+            String value = StringUtils.isEmpty(entry.getValue()) ? "" : entry.getValue().toString();
+            if (setSql.length() != 0) {
+                setSql.append(",");
             }
-            if (setSql.isEmpty()) {
-                setSql = entry.getKey() + "='" + value + "'";
-            } else {
-                setSql = setSql + "," + entry.getKey() + "='" + value + "'";
+            //todo 存在sql注入问题,需要修改
+            setSql.append(entry.getKey()).append("='").append(value).append("'");
+        }
+        if (map.get("update_time") == null && this.hasFieldDbName("update_time")) {
+            if (setSql.length() != 0) {
+                setSql.append(",");
             }
+            setSql.append("update_time='").append(String.valueOf(Util.time())).append("'");
         }
         sql += setSql + this.whereSql();
         dao.update(sql);
@@ -211,7 +257,13 @@ public class Db {
             value = "";
         }
         String sql = "UPDATE " + this.clazz.getName() + " SET ";
-        sql += key + "='" + value.toString() + "' ";
+        sql += key + "='" + value.toString() + "'";
+        if (!key.equals("update_time") && this.hasFieldDbName("update_time")) {
+            if (sql.length() != 0) {
+                sql = sql + ",";
+            }
+            sql = sql + "update_time='" + String.valueOf(Util.time()) + "'";
+        }
         sql += this.whereSql();
         dao.update(sql);
     }
@@ -224,11 +276,80 @@ public class Db {
     }
 
     public void multiInsert(List entities) {
+        Object obj = entities.get(0);
+        Class clazz = obj.getClass();
+
+        try {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                Column col = field.getAnnotation(Column.class);
+                if (col == null) {
+                    continue;
+                }
+                for (Object o : entities) {
+                    if (col.name().equals("create_time")) {
+                        this.setObjectFieldValue(o, field, Util.time());
+                    }
+                    if (col.name().equals("update_time")) {
+                        this.setObjectFieldValue(o, field, Util.time());
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
         dao.multiInsert(entities);
     }
 
     public void delete() {
         String hql = "DELETE " + this.clazz.getName() + this.whereSql();
         dao.delete(hql);
+    }
+
+    public boolean hasFieldDbName(String fieldName) {
+        return this.hasFieldDbName(fieldName, this.clazz);
+    }
+
+    public boolean hasFieldDbName(String fieldName, Class clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            Column col = field.getAnnotation(Column.class);
+            if (col != null && col.name().equals(fieldName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getPrimaryKey() {
+        return this.getPrimaryKey(this.clazz);
+    }
+
+    public String getPrimaryKey(Class clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            Id id = field.getAnnotation(Id.class);
+            if (id == null) {
+                continue;
+            }
+
+            Column col = field.getAnnotation(Column.class);
+            if (col == null) {
+                continue;
+            }
+            return col.name();
+        }
+        return "";
+    }
+
+    public void setObjectFieldValue(Object obj, Field field, Object value) {
+        try {
+            field.setAccessible(true);
+            PropertyDescriptor pd = new PropertyDescriptor(field.getName(), obj.getClass());
+            Method setMethod = pd.getWriteMethod();
+            setMethod.invoke(obj, value);
+        } catch (Exception e) {
+            //塞不进去就不塞了
+        }
     }
 }

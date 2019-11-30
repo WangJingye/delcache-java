@@ -49,9 +49,9 @@ $(function () {
                 error.insertAfter(element.parents('.form-radio-group'));
             } else if (element.hasClass('select2')) {
                 error.insertAfter(element.next('span'));
-            } else if(element.parent().hasClass('input-group')){
+            } else if (element.parent().hasClass('input-group')) {
                 error.insertAfter(element.parent());
-            }else{
+            } else {
                 error.insertAfter(element);
             }
         }
@@ -134,9 +134,28 @@ function POST(url, args, callback) {
     $.loading('show');
     $.post(stringTrim(url, '.html'), args, function (res) {
         $.loading('hide');
-        if (res.code == 200) {
+        if (res.code == 999) {//未登录
+            $.error(res.message,function () {
+                location.href = "/";
+            },2000);
+        } else if (res.code == 200) {//成功
             callback(res);
-        } else {
+        } else {//失败
+            $.error(res.message);
+        }
+    }, 'json');
+}
+function GET(url, args, callback) {
+    $.loading('show');
+    $.GET(stringTrim(url, '.html'), args, function (res) {
+        $.loading('hide');
+        if (res.code == 999) {//未登录
+            $.error(res.message,function () {
+                location.href = "/";
+            },2000);
+        } else if (res.code == 200) {//成功
+            callback(res);
+        } else {//失败
             $.error(res.message);
         }
     }, 'json');
