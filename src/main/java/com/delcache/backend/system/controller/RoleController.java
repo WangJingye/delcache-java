@@ -3,6 +3,8 @@ package com.delcache.backend.system.controller;
 import com.delcache.backend.common.BaseController;
 import com.delcache.backend.system.service.RoleService;
 import com.delcache.common.entity.*;
+import com.delcache.extend.Db;
+import com.delcache.extend.Request;
 import com.delcache.extend.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +30,7 @@ public class RoleController extends BaseController {
 
     @RequestMapping(value = "system/role/index", method = RequestMethod.GET)
     public String index(HttpServletRequest request, Model model) {
-        Map<String, Object> params = this.getParams();
+        Map<String, Object> params =Request.getInstance(request).getParams();
         Map<String, Object> res = this.roleService.getList(params);
         model.addAttribute("list", res.get("list"));
         model.addAttribute("pagination", res.get("pagination"));
@@ -42,7 +44,7 @@ public class RoleController extends BaseController {
         String id = request.getParameter("id");
         model.addAttribute("title", "创建角色");
         if (Util.parseInt(id) != 0) {
-            Role data = (Role) db.table(Role.class).where("id", id).find();
+            Role data = (Role) Db.table(Role.class).where("id", id).find();
             if (data == null) {
                 throw new Exception("参数有误");
             }
@@ -56,16 +58,16 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "system/role/edit", method = RequestMethod.POST)
     public Object edit(HttpServletRequest request) {
         try {
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             Role role;
             if (Util.parseInt(params.get("id")) != 0) {
-                role = (Role) db.table(Role.class).where("id", params.get("id")).find();
+                role = (Role) Db.table(Role.class).where("id", params.get("id")).find();
             } else {
                 params.remove("id");
                 role = new Role();
             }
             role.load(params);
-            db.table(Role.class).save(role);
+            Db.table(Role.class).save(role);
             return this.success("操作成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -80,7 +82,7 @@ public class RoleController extends BaseController {
             if (Util.parseInt(id) == 0) {
                 throw new Exception("参数有误");
             }
-            db.table(Role.class).where("id", id).update("status", request.getParameter("status"));
+            Db.table(Role.class).where("id", id).update("status", request.getParameter("status"));
             return this.success("操作成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -93,10 +95,10 @@ public class RoleController extends BaseController {
         if (Util.parseInt(id) == 0) {
             throw new Exception("参数有误");
         }
-        Role data = (Role) this.db.table(Role.class).where("id", id).find();
-        List<RoleAdmin> rows = (List<RoleAdmin>) this.db.table(RoleAdmin.class).where("role_id", id).findAll();
+        Role data = (Role) Db.table(Role.class).where("id", id).find();
+        List<RoleAdmin> rows = (List<RoleAdmin>) Db.table(RoleAdmin.class).where("role_id", id).findAll();
         List<String> adminIdList = Util.arrayColumn(rows, "adminId");
-        List<Admin> adminRows = (List<Admin>) this.db.table(Admin.class).where("identity", 0).findAll();
+        List<Admin> adminRows = (List<Admin>) Db.table(Admin.class).where("identity", 0).findAll();
         Map<String, String> adminList = Util.arrayColumn(adminRows, "realname", "adminId");
         model.addAttribute("data", data);
         model.addAttribute("adminList", adminList);
@@ -112,7 +114,7 @@ public class RoleController extends BaseController {
             if (Util.parseInt(id) == 0) {
                 throw new Exception("参数有误");
             }
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             this.roleService.setRoleAdmin(params);
             return this.success("设置成功");
         } catch (Exception e) {
@@ -125,10 +127,10 @@ public class RoleController extends BaseController {
         if (Util.parseInt(request.getParameter("id")) == 0) {
             throw new Exception("参数有误");
         }
-        Role data = (Role) this.db.table(Role.class).where("id", request.getParameter("id")).find();
-        List<RoleMenu> rows = (List<RoleMenu>) this.db.table(RoleMenu.class).where("role_id", request.getParameter("id")).findAll();
+        Role data = (Role) Db.table(Role.class).where("id", request.getParameter("id")).find();
+        List<RoleMenu> rows = (List<RoleMenu>) Db.table(RoleMenu.class).where("role_id", request.getParameter("id")).findAll();
         List<String> roleMenuIds = Util.arrayColumn(rows, "menuId");
-        List<Menu> menuList = (List<Menu>) this.db.table(Menu.class).where("status", 1).order("sort desc,create_time asc").findAll();
+        List<Menu> menuList = (List<Menu>) Db.table(Menu.class).where("status", 1).order("sort desc,create_time asc").findAll();
         List<Map<String, Object>> result = new ArrayList<>();
         for (Menu menu : menuList) {
             Map<String, Object> map = new HashMap<>();
@@ -153,7 +155,7 @@ public class RoleController extends BaseController {
             if (Util.parseInt(id) == 0) {
                 throw new Exception("参数有误");
             }
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             this.roleService.setRoleMenu(params);
             return this.success("设置成功");
         } catch (Exception e) {

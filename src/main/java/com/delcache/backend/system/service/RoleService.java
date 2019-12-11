@@ -3,9 +3,8 @@ package com.delcache.backend.system.service;
 import com.delcache.common.entity.Role;
 import com.delcache.common.entity.RoleAdmin;
 import com.delcache.common.entity.RoleMenu;
-import com.delcache.common.service.BaseService;
+import com.delcache.backend.common.BaseService;
 import com.delcache.extend.Db;
-import com.delcache.extend.Encrypt;
 import com.delcache.extend.Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,7 @@ import java.util.*;
 public class RoleService extends BaseService {
 
     public Map<String, Object> getList(Map<String, Object> params) {
-        Db selector = db.table(Role.class);
+        Db selector = Db.table(Role.class);
         if (Util.parseInt(params.get("status")) != 0) {
             selector.where("status", params.get("status"));
         }
@@ -45,7 +44,7 @@ public class RoleService extends BaseService {
         if (!StringUtils.isEmpty(params.get("admin_id"))) {
             newList.addAll(Arrays.asList(params.get("admin_id").toString().split(",")));
         }
-        List<RoleAdmin> roleMenus = (List<RoleAdmin>) this.db.table(RoleAdmin.class).where("role_id", params.get("id")).findAll();
+        List<RoleAdmin> roleMenus = (List<RoleAdmin>) Db.table(RoleAdmin.class).where("role_id", params.get("id")).findAll();
         List<String> oldList = Util.arrayColumn(roleMenus, "adminId");
         List<String> removeList = new ArrayList<>(oldList);
         removeList.removeAll(newList);
@@ -58,10 +57,10 @@ public class RoleService extends BaseService {
             inserts.add(roleAdmin);
         }
         if (inserts.size() > 0) {
-            this.db.table(RoleAdmin.class).multiInsert(inserts);
+            Db.table(RoleAdmin.class).multiInsert(inserts);
         }
         if (removeList.size() > 0) {
-            this.db.table(RoleAdmin.class).where("role_id", params.get("id")).where("admin_id", removeList, "in").delete();
+            Db.table(RoleAdmin.class).where("role_id", params.get("id")).where("admin_id", removeList, "in").delete();
         }
     }
 
@@ -75,7 +74,7 @@ public class RoleService extends BaseService {
         if (!StringUtils.isEmpty(params.get("menu_ids"))) {
             newList.addAll(Arrays.asList(params.get("menu_ids").toString().split(",")));
         }
-        List<RoleMenu> roleMenus = (List<RoleMenu>) this.db.table(RoleMenu.class).where("role_id", params.get("id")).findAll();
+        List<RoleMenu> roleMenus = (List<RoleMenu>) Db.table(RoleMenu.class).where("role_id", params.get("id")).findAll();
         List<String> oldList = Util.arrayColumn(roleMenus, "menuId");
         List<String> removeList = new ArrayList<>(oldList);
         removeList.removeAll(newList);
@@ -88,10 +87,10 @@ public class RoleService extends BaseService {
             inserts.add(roleMenu);
         }
         if (inserts.size() > 0) {
-            this.db.table(RoleMenu.class).multiInsert(inserts);
+            Db.table(RoleMenu.class).multiInsert(inserts);
         }
         if (removeList.size() > 0) {
-            this.db.table(RoleMenu.class).where("role_id", params.get("id")).where("menu_id", removeList, "in").delete();
+            Db.table(RoleMenu.class).where("role_id", params.get("id")).where("menu_id", removeList, "in").delete();
         }
     }
 

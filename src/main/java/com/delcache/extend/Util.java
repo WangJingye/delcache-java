@@ -215,6 +215,18 @@ public class Util {
         return res;
     }
 
+    public static double parseFloat(Object str) {
+        if (StringUtils.isEmpty(str)) {
+            return 0;
+        }
+        double res = 0;
+        try {
+            res = Double.parseDouble(str.toString());
+        } catch (NumberFormatException e) {
+        }
+        return res;
+    }
+
     public static int time() {
         return (int) (System.currentTimeMillis() / 1000);
     }

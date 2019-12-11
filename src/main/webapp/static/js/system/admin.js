@@ -24,7 +24,7 @@ $(function () {
             }
         },
         submitHandler: function (e) {
-            saveForm();
+            saveForm($('#save-form'));
             return false;
         }
     });
@@ -47,7 +47,9 @@ $(function () {
             }
         },
         submitHandler: function (e) {
-            changeUserForm();
+            saveForm($('#change-user-info-form'), function () {
+                location.reload();
+            });
             return false;
         }
     });
@@ -93,18 +95,14 @@ $(function () {
             status: $(this).data('status')
         };
         POST($(this).data('url'), args, function (res) {
-            $.success(res.message, function () {
-                location.reload();
-            });
+            location.reload();
         });
     });
     $('.reset-password-btn').click(function () {
         if (!confirm('是否重置密码为' + $(this).data('default') + '?')) {
             return false;
         }
-        POST($(this).data('url'), {admin_id: $(this).data('id')}, function (res) {
-            $.success(res.message);
-        });
+        POST($(this).data('url'), {admin_id: $(this).data('id')});
     });
 
     if (window.location.hash && $(window.location.hash).get(0)) {
@@ -112,82 +110,9 @@ $(function () {
     }
 });
 
-function saveForm() {
-    var form = $('#save-form');
-    var formData = new FormData();
-    var data = form.serializeArray();
-
-    var args = {};
-    for (var i in data) {
-        args[data[i].name] = data[i].value;
-    }
-    formData.append('data', JSON.stringify(args));
-    form.find('input[type=file]').each(function () {
-        if ($(this).val().length) {
-            formData.append($(this).attr('name'), $(this)[0].files[0]);
-        }
-    });
-    $.loading('show');
-    $.ajax({
-        url: stringTrim(form.attr('action'), ".html"),
-        type: 'POST',
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function (res) {
-            if (res.code == 200) {
-                $.success(res.message);
-            } else {
-                $.error(res.message);
-            }
-        },
-        complete: function () {
-            $.loading('hide');
-        }
-    });
-}
-
-function changeUserForm() {
-    let form = $('#change-user-info-form');
-    let formData = new FormData();
-    let data = form.serializeArray();
-    for (let i in data) {
-        formData.append(data[i].name, data[i].value);
-    }
-    form.find('input[type=file]').each(function () {
-        if ($(this).val().length) {
-            formData.append($(this).attr('name'), $(this)[0].files[0]);
-        }
-    });
-    $.loading('show');
-    $.ajax({
-        url: stringTrim(form.attr('action'), ".html"),
-        type: 'POST',
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function (res) {
-            if (res.code == 200) {
-                $.success(res.message, function () {
-                    location.reload();
-                }, 2000);
-            } else {
-                $.error(res.message);
-            }
-        },
-        complete: function () {
-            $.loading('hide');
-        }
-    });
-}
-
 function changePasswordForm() {
     let form = $('#change-password-form');
     POST(form.attr('action'), form.serialize(), function (res) {
-        $.success(res.message, function () {
-            location.reload();
-        }, 2000);
+        location.reload();
     }, 'json');
 }

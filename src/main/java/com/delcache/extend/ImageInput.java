@@ -24,12 +24,12 @@ public class ImageInput {
         }
         if (images.length < count) {
             if (count != 1) {
-                newName = name + "_add[0]";
+                newName = name + "_add[]";
             }
             html += "<div class=\"fileinput-box\">" +
                     "<div class=\"fileinput-button\">" +
                     "<div class=\"plus-symbol\"> +</div >" +
-                    "<input class=\"fileinput-input add-new\" type=\"file\" name =\"" + newName + "\" data-key=\"0\" data-name=\"" + name + "_add\">" +
+                    "<input class=\"fileinput-input add-new\" type=\"file\" name =\"" + newName + "\" data-name=\"" + name + "_add\">" +
                     "</div></div>";
         }
         html += "</div>";

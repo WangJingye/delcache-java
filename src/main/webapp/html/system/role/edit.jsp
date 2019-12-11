@@ -7,13 +7,13 @@
         <label class="col-sm-2 control-label" for="name">角色名称</label>
         <div class="col-sm-10">
             <input type="text" id="name" name="name" class="form-control" value="${data.name}"
-                   placeholder="请输入用户名">
+                   placeholder="请输入角色名称">
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label" for="remark">描述</label>
         <div class="col-sm-10">
-            <textarea name="remark" id="remark" class="form-control" placeholder="请输入用户名">${data.remark}</textarea>
+            <textarea name="remark" id="remark" class="form-control" placeholder="请输入描述">${data.remark}</textarea>
         </div>
     </div>
     <div class="form-group">

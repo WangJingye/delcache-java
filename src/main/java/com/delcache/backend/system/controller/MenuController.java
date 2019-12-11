@@ -3,6 +3,8 @@ package com.delcache.backend.system.controller;
 import com.delcache.backend.common.BaseController;
 import com.delcache.backend.system.service.MenuService;
 import com.delcache.common.entity.Menu;
+import com.delcache.extend.Db;
+import com.delcache.extend.Request;
 import com.delcache.extend.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,7 @@ public class MenuController extends BaseController {
 
     @RequestMapping(value = "system/menu/index", method = RequestMethod.GET)
     public String index(HttpServletRequest request, Model model) {
-        Map<String, Object> params = this.getParams();
+        Map<String, Object> params = Request.getInstance(request).getParams();
         Map<String, Object> res = this.menuService.getList(params);
         model.addAttribute("list", res.get("list"));
         model.addAttribute("pagination", res.get("pagination"));
@@ -41,7 +43,7 @@ public class MenuController extends BaseController {
         String id = request.getParameter("id");
         model.addAttribute("title", "创建菜单");
         if (!StringUtils.isEmpty(id)) {
-            Menu data = (Menu) db.table(Menu.class).where("id", id).find();
+            Menu data = (Menu) Db.table(Menu.class).where("id", id).find();
             if (data == null) {
                 throw new Exception("参数有误");
             }
@@ -59,16 +61,19 @@ public class MenuController extends BaseController {
     @RequestMapping(value = "system/menu/edit", method = RequestMethod.POST)
     public Object edit(HttpServletRequest request) {
         try {
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             Menu menu;
             if (!StringUtils.isEmpty(params.get("id"))) {
-                menu = (Menu) this.db.table(Menu.class).where("id", params.get("id")).find();
+                menu = (Menu) Db.table(Menu.class).where("id", params.get("id")).find();
+                if (menu == null) {
+                    throw new Exception("参数有误");
+                }
             } else {
                 params.remove("id");
                 menu = new Menu();
             }
             menu.load(params);
-            this.db.table(Menu.class).save(menu);
+            Db.table(Menu.class).save(menu);
             return this.success("操作成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -79,11 +84,11 @@ public class MenuController extends BaseController {
     @RequestMapping(value = "system/menu/set-status", method = RequestMethod.POST)
     public Object setStatus(HttpServletRequest request) {
         try {
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             if (Util.parseInt(params.get("id")) == 0) {
                 throw new Exception("参数有误");
             }
-            this.db.table(Menu.class).where("id", params.get("id")).update("status", params.get("status"));
+            Db.table(Menu.class).where("id", params.get("id")).update("status", params.get("status"));
             return this.success("操作成功");
         } catch (Exception e) {
             return this.error(e.getMessage());

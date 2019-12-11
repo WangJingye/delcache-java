@@ -11,7 +11,7 @@ $(function () {
             }
         },
         submitHandler: function (e) {
-            saveForm();
+            saveForm($('#save-form'));
             return false;
         }
     });
@@ -37,7 +37,7 @@ $(function () {
     });
     $('#save-role-admin-form').validate({
         submitHandler: function (e) {
-            saveRoleAdminForm();
+            saveForm($('#save-role-admin-form'));
             return false;
         }
     });
@@ -69,14 +69,6 @@ function getCheckTreeNodes(nodes) {
     });
 }
 
-function saveRoleAdminForm() {
-    var form = $('#save-role-admin-form');
-    var data = form.serialize();
-    POST(form.attr('action'), data, function (res) {
-        $.success(res.message);
-    });
-}
-
 function saveRoleMenuForm() {
     nodesArr = [];
     var zTree = $.fn.zTree.getZTreeObj('menuTree');
@@ -84,15 +76,5 @@ function saveRoleMenuForm() {
     var form = $('#save-role-menu-form');
     $('input[name=menu_ids]').val(nodesArr.join(','));
     var data = form.serialize();
-    POST(form.attr('action'), data, function (res) {
-        $.success(res.message);
-    });
-}
-
-function saveForm() {
-    var form = $('#save-form');
-    var data = form.serialize();
-    POST(form.attr('action'), data, function (res) {
-        $.success(res.message);
-    });
+    POST(form.attr('action'), data);
 }

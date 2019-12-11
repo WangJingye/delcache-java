@@ -4,7 +4,9 @@ import com.delcache.backend.common.BaseController;
 import com.delcache.backend.system.service.AdminService;
 import com.delcache.common.entity.Admin;
 import com.delcache.common.entity.SiteInfo;
+import com.delcache.extend.Db;
 import com.delcache.extend.Encrypt;
+import com.delcache.extend.Request;
 import com.delcache.extend.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +32,7 @@ public class AdminController extends BaseController {
 
     @RequestMapping(value = "system/admin/index", method = RequestMethod.GET)
     public String index(HttpServletRequest request, Model model) {
-        Map<String, Object> params = this.getParams();
+        Map<String, Object> params = Request.getInstance(request).getParams();
         Map<String, Object> res = this.adminService.getList(params);
         model.addAttribute("list", res.get("list"));
         model.addAttribute("statusList", this.statusList);
@@ -45,7 +47,7 @@ public class AdminController extends BaseController {
         String id = request.getParameter("admin_id");
         model.addAttribute("title", "创建账号");
         if (Util.parseInt(id) != 0) {
-            Admin data = (Admin) db.table(Admin.class).where("admin_id", id).find();
+            Admin data = (Admin) Db.table(Admin.class).where("admin_id", id).find();
             if (data == null) {
                 throw new Exception("数据有误");
             }
@@ -59,10 +61,10 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "system/admin/edit", method = RequestMethod.POST)
     public Object edit(HttpServletRequest request) {
         try {
-            Map<String, Object> params = this.getParams(request);
+            Map<String, Object> params = Request.getInstance(request).getParams();
             Admin admin;
             if (Util.parseInt(params.get("admin_id")) != 0) {
-                admin = (Admin) db.table(Admin.class).where("admin_id", params.get("admin_id")).find();
+                admin = (Admin) Db.table(Admin.class).where("admin_id", params.get("admin_id")).find();
                 if (admin == null) {
                     throw new Exception("参数有误");
                 }
@@ -70,10 +72,10 @@ public class AdminController extends BaseController {
                 params.remove("admin_id");
                 admin = new Admin();
             }
-            Map<String, Object> fileResult = this.parseFile(request, "upload/admin");
-            params = (Map<String, Object>) bindMap(params, fileResult);
+            String avatar = Request.getInstance(request).parseFileAndParams("avatar", "upload/admin");
+            params.put("avatar", avatar);
             admin.load(params);
-            db.table(Admin.class).save(admin);
+            Db.table(Admin.class).save(admin);
             return this.success("密码已重置");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -88,7 +90,7 @@ public class AdminController extends BaseController {
             if (Util.parseInt(id) == 0) {
                 throw new Exception("参数有误");
             }
-            db.table(Admin.class).where("id", id).update("status", request.getParameter("status"));
+            Db.table(Admin.class).where("id", id).update("status", request.getParameter("status"));
             return this.success("操作成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -102,8 +104,8 @@ public class AdminController extends BaseController {
             if (Util.parseInt(request.getParameter("admin_id")) == 0) {
                 throw new Exception("参数有误");
             }
-            Admin user = (Admin) db.table(Admin.class).where("admin_id", request.getParameter("admin_id")).find();
-            SiteInfo siteInfo = (SiteInfo) db.table(SiteInfo.class).find();
+            Admin user = (Admin) Db.table(Admin.class).where("admin_id", request.getParameter("admin_id")).find();
+            SiteInfo siteInfo = (SiteInfo) Db.table(SiteInfo.class).find();
             this.adminService.changePassword(user, siteInfo.getDefaultPassword());
             return this.success("密码已重置");
         } catch (Exception e) {
@@ -121,11 +123,11 @@ public class AdminController extends BaseController {
     public Object changeProfile(HttpServletRequest request) {
         try {
             Admin user = (Admin) request.getSession().getAttribute("user");
-            Map<String, Object> params = this.getParams(request);
-            Map<String, Object> fileResult = this.parseFile(request, "upload/admin");
-            params = (Map<String, Object>) bindMap(params, fileResult);
+            Map<String, Object> params = Request.getInstance(request).getParams();
+            String avatar = Request.getInstance(request).parseFileAndParams("avatar", "upload/admin");
+            params.put("avatar", avatar);
             user.load(params);
-            db.table(Admin.class).save(user);
+            Db.table(Admin.class).save(user);
             return this.success("修改成功");
         } catch (Exception e) {
             return this.error(e.getMessage());

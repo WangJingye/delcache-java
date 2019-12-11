@@ -1,7 +1,7 @@
 package com.delcache.backend.system.service;
 
+import com.delcache.backend.common.BaseService;
 import com.delcache.common.entity.Admin;
-import com.delcache.common.service.BaseService;
 import com.delcache.extend.Db;
 import com.delcache.extend.Encrypt;
 import com.delcache.extend.Util;
@@ -19,7 +19,7 @@ import java.util.Random;
 public class AdminService extends BaseService {
 
     public Map<String, Object> getList(Map<String, Object> params) {
-        Db selector = db.table(Admin.class);
+        Db selector = Db.table(Admin.class);
         if (Util.parseInt(params.get("status")) != 0) {
             selector.where("status", params.get("status"));
         }
@@ -46,6 +46,6 @@ public class AdminService extends BaseService {
         Map<String, Object> update = new HashMap<>();
         update.put("salt", salt);
         update.put("password", Encrypt.encryptPassword(password, salt));
-        db.table(Admin.class).where("admin_id", user.getAdminId()).update(update);
+        Db.table(Admin.class).where("admin_id", user.getAdminId()).update(update);
     }
 }

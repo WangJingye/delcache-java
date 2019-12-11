@@ -118,6 +118,7 @@
 }
 
 .fileinput-box {
+    margin: 5px;
     width: 82px;
     position: relative;
     height: 82px;

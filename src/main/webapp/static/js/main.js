@@ -78,10 +78,7 @@ $(function () {
             };
             if ($this.hasClass('add-new') && maxNumber > nowNumber) {
                 var newBox = box.clone();
-                var max = (parseInt($this.attr('data-max')) + 1).toString();
-                var keyName = $this.attr('data-name');
                 box.after('<div class="fileinput-box">' + newBox.html() + '</div>');
-                box.parents('.fileinput-box-list').find('.fileinput-input').last().attr('name', keyName + '[' + max + ']');
             }
             if ($this[0].files.length) {
                 reader.readAsDataURL($this[0].files[0]);
@@ -130,35 +127,101 @@ $(function () {
     });
 });
 
-function POST(url, args, callback) {
+function POST(url, args, callback, actionAfterMessage) {
+    if (actionAfterMessage == null) {
+        actionAfterMessage = true;
+    }
     $.loading('show');
     $.post(stringTrim(url, '.html'), args, function (res) {
         $.loading('hide');
         if (res.code == 999) {//未登录
-            $.error(res.message,function () {
+            $.error(res.message, function () {
                 location.href = "/";
-            },2000);
+            }, 2000);
         } else if (res.code == 200) {//成功
-            callback(res);
+            if (actionAfterMessage) {
+                $.success(res.message, function () {
+                    if (typeof callback == 'function') {
+                        callback(res);
+                    }
+                }, 2000);
+            } else {
+                $.success(res.message);
+                if (typeof callback == 'function') {
+                    callback(res);
+                }
+            }
         } else {//失败
             $.error(res.message);
         }
     }, 'json');
 }
-function GET(url, args, callback) {
+
+function GET(url, args, callback, actionAfterMessage) {
+    if (actionAfterMessage == null) {
+        actionAfterMessage = true;
+    }
     $.loading('show');
-    $.GET(stringTrim(url, '.html'), args, function (res) {
+    $.get(stringTrim(url, '.html'), args, function (res) {
         $.loading('hide');
         if (res.code == 999) {//未登录
-            $.error(res.message,function () {
+            $.error(res.message, function () {
                 location.href = "/";
-            },2000);
+            }, 2000);
         } else if (res.code == 200) {//成功
-            callback(res);
+            if (actionAfterMessage) {
+                $.success(res.message, function () {
+                    if (typeof callback == 'function') {
+                        callback(res);
+                    }
+                }, 2000);
+            } else {
+                $.success(res.message);
+                if (typeof callback == 'function') {
+                    callback(res);
+                }
+            }
         } else {//失败
             $.error(res.message);
         }
     }, 'json');
+}
+
+function saveForm(form, callback) {
+    var formData = new FormData();
+    var data = form.serializeArray();
+
+    for (var i in data) {
+        formData.append(data[i].name, data[i].value);
+    }
+    form.find('input[type=file]').each(function () {
+        if ($(this).val().length) {
+            formData.append($(this).attr('name'), $(this)[0].files[0]);
+        }
+    });
+    $.loading('show');
+    $.ajax({
+        url: stringTrim(form.attr('action'), ".html"),
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function (res) {
+            if (res.code == 200) {
+                $.success(res.message, function () {
+                    if (typeof callback == 'function') {
+                        callback(res);
+                    }
+                });
+            } else {
+                $.error(res.message);
+            }
+        },
+        complete: function () {
+            $.loading('hide');
+        }
+    });
 }
 
 Date.prototype.Format = function (fmt) {
@@ -191,3 +254,4 @@ function stringTrim(str, element) {
     } while (beginIndexFlag || endIndexFlag);
     return str;
 }
+

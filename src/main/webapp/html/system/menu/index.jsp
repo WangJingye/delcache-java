@@ -27,10 +27,14 @@
     </div>
     <div class="form-content">
         <%
-            Map<String, String> searchMap = new HashMap<>();
-            searchMap.put("id", "ID");
-            searchMap.put("name", "菜单名称");
-            searchMap.put("url", "URL");%>
+            Map<String, String> searchMap = new HashMap<String, String>(){
+                {
+                    put("id", "ID");
+                    put("name", "菜单名称");
+                    put("url", "URL");
+                }
+            };
+           %>
         <span class="control-label search-label">查询条件</span>
         <div class="clearfix" style="display: inline-flex;">
             <select class="form-control search-type" name="search_type">

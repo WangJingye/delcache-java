@@ -7,8 +7,6 @@ import java.util.Map;
 
 public class BaseController {
 
-    public Db db;
-
     public Map<String, Object> success(String message, Object data) {
         return Util.success(message, data);
     }
@@ -23,8 +21,6 @@ public class BaseController {
 
     public Map<String, Object> error(String message, Object data) {
         return Util.error(message, data);
-
     }
-
 
 }

@@ -32,7 +32,7 @@ public class Db {
 
     public static Db table(Class clazz) {
         Db db = new Db();
-        db.dao = ContextLoader.getCurrentWebApplicationContext().getBeansOfType(BaseDao.class).get("baseDao");
+        db.dao = ContextLoader.getCurrentWebApplicationContext().getBeansOfType(BaseDao.class).get("baseDaoImpl");
         db.clazz = clazz;
         Table annotation = (Table) clazz.getAnnotation(Table.class);
         db.table = annotation.name();
