@@ -1,0 +1,4 @@
+package com.delcache.{{app}}.common;
+
+public class BaseController extends com.delcache.common.controller.BaseController {
+}

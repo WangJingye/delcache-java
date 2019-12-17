@@ -1,0 +1,16 @@
+package com.delcache.common.entity;
+
+import org.hibernate.annotations.DynamicInsert;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "{{table}}")
+@DynamicInsert(true)
+public class {{model}} extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "{{primaryKey}}")
+    private int {{primaryKey}};{{declare}}{{setter-getter}}
+}

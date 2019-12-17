@@ -1,6 +1,5 @@
 package com.delcache.common.controller;
 
-import com.delcache.extend.Db;
 import com.delcache.extend.Util;
 
 import java.util.Map;

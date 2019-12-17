@@ -1,0 +1,7 @@
+package com.delcache.{{app}}.common;
+
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+public class BaseService extends com.delcache.common.service.BaseService {
+}

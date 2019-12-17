@@ -1,0 +1,23 @@
+package com.delcache.{{app}}.{{module}}.service;
+
+import com.delcache.backend.common.BaseService;
+import com.delcache.common.entity.{{model}};
+import com.delcache.extend.Db;
+import com.delcache.extend.Util;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@Transactional
+public class {{model}}Service extends BaseService {
+
+    public Map<String, Object> getList(Map<String, Object> params) {
+        Db selector = Db.table({{model}}.class);{{selectorParams}}
+        return this.pagination(selector, params);
+    }
+
+}

@@ -1,0 +1,27 @@
+$(function () {
+    $('#save-form').validate({
+        rules: {{{rules}}},
+        messages: {{{rulesMessage}}},
+        submitHandler: function (e) {
+            saveForm($('#save-form'),function (res) {
+                if($("#index-url").get(0)){
+                    location.href = $("#index-url").val();
+                }
+            });
+            return false;
+        }
+    });
+
+    $('.remove-btn').click(function () {
+        if (!confirm('是否删除此记录？')) {
+            return false;
+        }
+        let $this = $(this);
+        let args = {
+            {{primaryKey}}: $(this).data('{{primaryKey}}'),
+        };
+        POST($(this).data('url'), args, function (res) {
+            $this.parents('tr').remove()
+        }, false);
+    });{{statusJs}}
+});
