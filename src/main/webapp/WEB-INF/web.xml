@@ -15,9 +15,6 @@
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>dispatcher</servlet-name>
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
@@ -25,6 +22,7 @@
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
         <url-pattern>/upload/*</url-pattern>
+        <url-pattern>/favicon.ico</url-pattern>
     </servlet-mapping>
     <!--  为了能够处理中文的post请求，再配置一个encodingFilter，以避免post请求中文出现乱码情况 -->
     <filter>

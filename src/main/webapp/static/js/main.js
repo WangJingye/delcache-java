@@ -208,7 +208,11 @@ function saveForm(form, callback) {
         contentType: false,
         processData: false,
         success: function (res) {
-            if (res.code == 200) {
+            if (res.code == 999) {//未登录
+                $.error(res.message, function () {
+                    location.href = "/";
+                }, 2000);
+            } else if (res.code == 200) {
                 $.success(res.message, function () {
                     if (typeof callback == 'function') {
                         callback(res);

@@ -3,10 +3,13 @@ package com.delcache.Interceptor;
 import com.delcache.backend.common.config.Config;
 import com.delcache.common.entity.Admin;
 import com.delcache.common.entity.Menu;
+import com.delcache.common.entity.OperationLog;
 import com.delcache.common.entity.RoleMenu;
 import com.delcache.extend.Db;
+import com.delcache.extend.Request;
 import com.delcache.extend.UrlManager;
 import com.delcache.extend.Util;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -78,6 +81,18 @@ public class AuthFilter implements HandlerInterceptor {
         //验证用户权限,identity = 1 为超级管理员
         if (user.getIdentity() == 0 && !this.checkUserAuth(request)) {
             return this.redirectNoAuth(request, response);
+        }
+        if (UrlManager.isAjax(request)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String params = objectMapper.writeValueAsString(Request.getInstance(request).getParams());
+            OperationLog opLog = new OperationLog();
+            opLog.setCreateTime(Util.time());
+            opLog.setOperatorId(user.getAdminId());
+            opLog.setUrl(request.getRequestURI());
+            opLog.setPost(params);
+            opLog.setReferUrl(request.getHeader("Referer"));
+            opLog.setIp(Util.getRemoteIp(request));
+            Db.table(OperationLog.class).save(opLog);
         }
         return true;
     }

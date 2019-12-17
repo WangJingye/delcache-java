@@ -12,7 +12,7 @@ $(function () {
         },
         submitHandler: function (e) {
             saveForm($('#save-form'), function (res) {
-                location.reload();
+                // location.reload();
             });
             return false;
         }

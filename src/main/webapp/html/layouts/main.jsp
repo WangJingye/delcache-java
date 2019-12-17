@@ -5,13 +5,20 @@
 <%@ page import="com.delcache.extend.UrlManager" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    List<Menu> activeMenu = (List<Menu>) request.getAttribute("activeMenu");
+    String title = (String) request.getAttribute("title");
+    if (StringUtils.isEmpty(title)) {
+        title = activeMenu.get(0).getName();
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title}</title>
+    <title><%= title%></title>
     <link href="/static/plugin/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/bootstrap4.css" rel="stylesheet">
     <link href="/static/css/select2.min.css" rel="stylesheet">
@@ -37,7 +44,6 @@
                     <ul class="navbar-nav navbar-left nav">
                         <%
                             List<Menu> menus = (List<Menu>) request.getAttribute("menus");
-                            List<Menu> activeMenu = (List<Menu>) request.getAttribute("activeMenu");
                             List<String> activeMenuIds = Util.arrayColumn(activeMenu, "id");
                             for (Menu menu : menus) {
                                 List<Menu> firstList = (List<Menu>) menu.extra;
@@ -104,12 +110,6 @@
                     </li>
                     <% }%>
                 </ul>
-                <%
-                    String title = (String) request.getAttribute("title");
-                    if (StringUtils.isEmpty(title)) {
-                        title = activeMenu.get(0).getName();
-                    }
-                %>
                 <h3><%= title%>
                 </h3>
                 <hr>
