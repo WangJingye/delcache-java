@@ -46,6 +46,7 @@ public class MenuService extends BaseService {
         if (!StringUtils.isEmpty(params.get("url"))) {
             selector.where("url", params.get("url"), "like");
         }
+        selector.order("id desc");
         return this.pagination(selector, params);
     }
 

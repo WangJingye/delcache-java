@@ -44,10 +44,11 @@
                                 if (firstList.size() > 0) {
                         %>
                         <li class="<%= activeMenuIds.contains(String.valueOf(menu.getId()))?"active":""%>">
-                            <a <% if (!menu.getUrl().isEmpty()) {%>
-                                    href="<%= UrlManager.createUrl(menu.getUrl()) %>"<%}%>>
+                            <% if (!menu.getUrl().isEmpty()) {%>
+                            <a href="<%= UrlManager.createUrl(menu.getUrl()) %>">
                                 <%= menu.getName() %>
                             </a>
+                            <%}%>
                         </li>
                         <% }%>
                         <% }%>

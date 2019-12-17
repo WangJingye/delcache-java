@@ -19,11 +19,11 @@ public class RoleService extends BaseService {
 
     public Map<String, Object> getList(Map<String, Object> params) {
         Db selector = Db.table(Role.class);
-        if (Util.parseInt(params.get("status")) != 0) {
+        if (!StringUtils.isEmpty(params.get("status"))) {
             selector.where("status", params.get("status"));
         }
-        if (Util.parseInt(params.get("admin_id")) != 0) {
-            selector.where("admin", params.get("admin"));
+        if (!StringUtils.isEmpty(params.get("status"))) {
+            selector.where("admin_id", params.get("admin_id"));
         }
         if (!StringUtils.isEmpty(params.get("username"))) {
             selector.where("username", params.get("username"), "like");
@@ -31,6 +31,8 @@ public class RoleService extends BaseService {
         if (!StringUtils.isEmpty(params.get("username"))) {
             selector.where("username", params.get("username"), "like");
         }
+        selector.order("id desc");
+
         return this.pagination(selector, params);
     }
 
