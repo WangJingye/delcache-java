@@ -94,5 +94,4 @@ public class MenuController extends BaseController {
             return this.error(e.getMessage());
         }
     }
-
 }

@@ -38,7 +38,7 @@ public class SiteInfo extends BaseEntity {
     @Column(name = "wechat_pay_key")
     private String wechatPayKey;
 
-    @Column(name = "create_time", updatable = false)
+    @Column(name = "create_time")
     private int createTime;
 
     @Column(name = "update_time")

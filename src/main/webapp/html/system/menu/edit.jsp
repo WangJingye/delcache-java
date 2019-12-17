@@ -1,4 +1,3 @@
-<%@ page import="com.delcache.extend.Util" %>
 <%@ page import="com.delcache.extend.SelectInput" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.delcache.common.entity.Menu" %>
@@ -58,7 +57,7 @@
         </div>
     </div>
 </form>
-<input type="hidden" id="index-url" value="<%=UrlManager.createUrl("system/menu/index")%>">
+<input type="hidden" id="index-url" value="<%= UrlManager.createUrl("system/menu/index") %>">
 <custom_script>
     <script src="/static/js/system/menu.js"></script>
 </custom_script>

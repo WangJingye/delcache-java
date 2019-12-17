@@ -3,6 +3,7 @@ package com.delcache.extend;
 
 import javafx.util.Pair;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -147,6 +148,9 @@ public class Request {
                 }
                 result.put(key, value);
             }
+        }
+        if (!StringUtils.isEmpty(result.get("search_type")) && !StringUtils.isEmpty(result.get("search_value"))) {
+            result.put(result.get("search_type").toString(), result.get("search_value"));
         }
         return result;
     }

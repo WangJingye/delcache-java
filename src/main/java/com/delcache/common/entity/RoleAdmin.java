@@ -21,7 +21,7 @@ public class RoleAdmin extends BaseEntity {
     @Column(name = "role_id")
     private int roleId;
 
-    @Column(name = "create_time", updatable = false)
+    @Column(name = "create_time")
     private int createTime;
 
     public int getId() {

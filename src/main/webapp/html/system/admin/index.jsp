@@ -13,15 +13,15 @@
 <form class="search-form" action="<%= UrlManager.createUrl("system/admin/index") %>" method="get">
     <% Map<String, String> params = (Map<String, String>) request.getAttribute("params");%>
     <div class="form-content">
-        <span class="control-label search-label">用户状态</span>
+        <span class="control-label search-label">用户状态</span><%
+        Map<String, String> statusList = (Map<String, String>) request.getAttribute("statusList");
+        for (Map.Entry<String, String> entry : statusList.entrySet()) {
+    %>
         <select name="status" id="status" class="form-control search-input">
             <option value="">请选择</option>
-            <%
-                Map<String, String> statusList = (Map<String, String>) request.getAttribute("statusList");
-                for (Map.Entry<String, String> entry : statusList.entrySet()) {
-            %>
+
             <option value="<%= entry.getKey() %>" <%= entry.getKey().equals(params.get("status")) ? "selected" : "" %>>
-                <%=entry.getValue()%>
+                <%= entry.getValue() %>
             </option>
             <% }%>
         </select>

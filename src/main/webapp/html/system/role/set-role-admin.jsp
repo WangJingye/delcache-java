@@ -1,9 +1,7 @@
 <%@ page import="com.delcache.extend.UrlManager" %>
 <%@ page import="com.delcache.extend.SelectInput" %>
-<%@ page import="com.delcache.common.entity.Admin" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="com.delcache.extend.Util" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%
     Map<String, String> adminList = (Map<String, String>) request.getAttribute("adminList");

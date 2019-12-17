@@ -27,7 +27,7 @@ public class Role extends BaseEntity {
     @Column(name = "status")
     private int status;
 
-    @Column(name = "create_time", updatable = false)
+    @Column(name = "create_time")
     private int createTime;
 
     @Column(name = "update_time")
