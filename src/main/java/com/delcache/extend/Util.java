@@ -1,5 +1,6 @@
 package com.delcache.extend;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 
@@ -80,8 +81,11 @@ public class Util {
     public static List<String> arrayColumn(List list, String value) {
         List<String> result = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef
+                = new TypeReference<HashMap<String, Object>>() {
+        };
         for (Object obj : list) {
-            Map<String, Object> map = objectMapper.convertValue(obj, Map.class);
+            Map<String, Object> map = objectMapper.convertValue(obj, typeRef);
             Object newValue = map.get(value);
             if (StringUtils.isEmpty(map.get(value))) {
                 newValue = "";
@@ -94,8 +98,11 @@ public class Util {
     public static Map<String, String> arrayColumn(List list, String value, String key) {
         Map<String, String> result = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef
+                = new TypeReference<HashMap<String, Object>>() {
+        };
         for (Object obj : list) {
-            Map<String, Object> map = objectMapper.convertValue(obj, Map.class);
+            Map<String, Object> map = objectMapper.convertValue(obj, typeRef);
             Object newKey = map.get(key);
             Object newValue = map.get(value);
             if (StringUtils.isEmpty(newKey)) {
@@ -113,12 +120,16 @@ public class Util {
     /*
      * 将时间转换为时间戳
      */
-    public static String dateToStamp(String s) throws ParseException {
+    public static String dateToStamp(String s) {
         String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse(s);
-        long ts = date.getTime();
-        res = String.valueOf(ts);
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = simpleDateFormat.parse(s);
+            long ts = date.getTime();
+            res = String.valueOf(ts);
+        } catch (Exception e) {
+            res = "";
+        }
         return res;
     }
 
@@ -126,7 +137,7 @@ public class Util {
      * 将时间戳转换为时间
      */
     public static String stampToDate(Object s, String format) {
-        Long lt = Long.parseLong(s.toString()) * 1000;
+        long lt = Long.parseLong(s.toString()) * 1000;
         if (lt == 0) {
             return "";
         }
@@ -141,7 +152,7 @@ public class Util {
      * 将时间戳转换为时间
      */
     public static String stampToDate(Object s) {
-        Long lt = Long.parseLong(s.toString()) * 1000;
+        long lt = Long.parseLong(s.toString()) * 1000;
         if (lt == 0) {
             return "";
         }
@@ -165,20 +176,20 @@ public class Util {
             return res;
         }
         int size = (int) Math.floor((double) diff / ch.length());
-        String pad = "";
+        StringBuilder pad = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            pad += ch;
+            pad.append(ch);
         }
 
         //剩余要补的长度
         int leave = diff - (size * ch.length());
         if (leave > 0) {
-            pad += ch.substring(0, leave);
+            pad.append(ch, 0, leave);
         }
         if (padType == 1) {
-            res = pad + res;
+            res = pad.append(res).toString();
         } else {
-            res = res + pad;
+            res = res + pad.toString();
         }
         return res;
     }
@@ -208,10 +219,11 @@ public class Util {
         if (StringUtils.isEmpty(str)) {
             return 0;
         }
-        int res = 0;
+        int res;
         try {
             res = Integer.parseInt(str.toString());
         } catch (NumberFormatException e) {
+            res = 0;
         }
         return res;
     }
@@ -220,10 +232,11 @@ public class Util {
         if (StringUtils.isEmpty(str)) {
             return 0;
         }
-        double res = 0;
+        double res;
         try {
             res = Double.parseDouble(str.toString());
         } catch (NumberFormatException e) {
+            res = 0;
         }
         return res;
     }

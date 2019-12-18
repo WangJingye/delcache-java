@@ -1,15 +1,25 @@
 package com.delcache.console.controller;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.*;
 
 public class IndexController {
     public static void main(String[] args) {
-        Map<Integer, String> result = new HashMap<>();
-        System.out.println(String.join(",", result.values()));
+        Object a=128;
+        Object b=128;
+        if(a==b){
+            System.out.println();
+            System.out.println(1);
+        }
+        System.out.println(2);
+//        List<String> conditionLi =new ArrayList<>();
+//        conditionLi.add("a");
+//        conditionLi.add("b");
+//        String result=String.join("," ,conditionLi.toArray(new String[0]));
+//
+//        System.out.println(result);
 
 //        String[] valueArray =   new String[result.size()];
 //        result.values().toArray(valueArray);

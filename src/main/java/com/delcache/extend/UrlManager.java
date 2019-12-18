@@ -61,9 +61,6 @@ public class UrlManager {
     }
 
     public static Boolean isAjax(HttpServletRequest request) {
-        if (!StringUtils.isEmpty(request.getHeader("X-Requested-With")) && request.getHeader("X-Requested-With").equals("XMLHttpRequest")) {
-            return true;
-        }
-        return false;
+        return !StringUtils.isEmpty(request.getHeader("X-Requested-With")) && request.getHeader("X-Requested-With").equals("XMLHttpRequest");
     }
 }

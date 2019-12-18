@@ -60,20 +60,20 @@ public class BaseDaoImpl  implements BaseDao {
         return ((Number) query.uniqueResult()).intValue();
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void save(BaseEntity t) {
         Session factory = sessionFactory.getCurrentSession();
         factory.saveOrUpdate(t);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public int update(String hql) {
         Session factory = sessionFactory.getCurrentSession();
         Query query = factory.createQuery(hql);
         return query.executeUpdate();
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void multiInsert(List entities) {
         Session factory = sessionFactory.getCurrentSession();
         for (int i = 0; i < entities.size(); i++) {
@@ -86,7 +86,7 @@ public class BaseDaoImpl  implements BaseDao {
         }
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(String hql) {
         Session factory = sessionFactory.getCurrentSession();
         Query query = factory.createQuery(hql);

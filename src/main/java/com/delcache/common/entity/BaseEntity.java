@@ -50,7 +50,7 @@ public class BaseEntity {
         String str = Util.objectToString(nMap);
         Object newEntity = Util.stringToObject(str, this.getClass());
         for (Field field : existFields) {
-            Object newValue = new Object();
+            Object newValue;
             try{
                 field.setAccessible(true);
                 newValue = field.get(newEntity);

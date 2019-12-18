@@ -73,33 +73,33 @@ public class SelectInput {
     }
 
     protected static String show(Map<String, String> map, List<String> checks, String name, String type, Boolean multi) {
-        String html = "";
+        StringBuilder html = new StringBuilder();
         String id = name;
         if (multi) {
             name = name + "[]";
         }
         if (type.equals("radio") || type.equals("checkbox")) {
-            html += "<div class=\"form-radio-group\">";
+            html.append("<div class=\"form-radio-group\">");
             for (Map.Entry<String, String> v : map.entrySet()) {
                 String checked = checks.contains(v.getKey()) ? "checked" : "";
-                html += "<label class=\"" + type + "-inline\">" +
-                        "<input type=\"" + type + "\" name=\"" + name + "\" id=\"" + id + "\" value=\"" + v.getKey() + "\" " + checked + "> " +
-                        v.getValue() + "</label>";
+                html.append("<label class=\"").append(type).append("-inline\">" )
+                        .append("<input type=\"").append(type).append("\" name=\"").append(name).append("\" id=\"").append(id).append("\" value=\"").append(v.getKey()).append("\" ").append(checked).append("> ")
+                        .append(v.getValue()).append("</label>");
             }
-            html += "</div>";
+            html.append("</div>");
         } else if (type.equals("select") || type.equals("select2")) {
             String multiString = multi ? "multiple" : "";
-            html += "<select name=\"" + name + "\" class=\"form-control" + (type.equals("select2") ? " select2" : "") + "\" id=\"" + id + "\" " + multiString + ">";
+            html.append("<select name=\"").append(name).append("\" class=\"form-control").append((type.equals("select2") ? " select2" : "")).append("\" id=\"").append(id).append("\" ").append(multiString).append(">");
             if (!multi) {
                 //单选增加请选择选项
-                html += "<option value=\"\">请选择</option>";
+                html.append("<option value=\"\">请选择</option>");
             }
             for (Map.Entry<String, String> v : map.entrySet()) {
                 String checked = checks.contains(v.getKey()) ? "selected" : "";
-                html += "<option value=\"" + v.getKey() + "\" " + checked + ">" + v.getValue() + "</option>";
+                html.append("<option value=\"").append(v.getKey()).append("\" ").append(checked).append(">").append(v.getValue()).append("</option>");
             }
-            html += "</select>";
+            html.append("</select>");
         }
-        return html;
+        return html.toString();
     }
 }

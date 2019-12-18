@@ -111,8 +111,8 @@ public class Request {
             }
             return String.join(",", result.values());
         } catch (Exception e) {
+            return "";
         }
-        return "";
     }
 
     private Pair<Integer, String> getKeyAndName(String inputName) {

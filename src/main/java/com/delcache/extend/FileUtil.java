@@ -59,7 +59,7 @@ public class FileUtil {
             if (file.isFile() && file.exists()) { //判断文件是否存在
                 InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
-                String lineTxt = "";
+                String lineTxt;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
                     fileValue.append(lineTxt).append("\n");
                 }

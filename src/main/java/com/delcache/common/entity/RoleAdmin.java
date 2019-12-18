@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_role_admin")
-@DynamicInsert(true)
+@DynamicInsert()
 public class RoleAdmin extends BaseEntity {
 
     @Id

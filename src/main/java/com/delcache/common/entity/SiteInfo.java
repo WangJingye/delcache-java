@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_site_info")
-@DynamicInsert(true)
+@DynamicInsert()
 public class SiteInfo extends BaseEntity {
 
     @Id

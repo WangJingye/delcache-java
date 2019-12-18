@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_operation_log")
-@DynamicInsert(true)
+@DynamicInsert()
 public class OperationLog extends BaseEntity {
 
     @Id

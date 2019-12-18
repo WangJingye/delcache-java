@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_role")
-@DynamicInsert(true)
+@DynamicInsert()
 public class Role extends BaseEntity {
 
     @Id

@@ -106,12 +106,12 @@ public class Db {
                         break;
                     case "in":
                         conditionLi = (List<String>) val[0];
-                        condition = String.join("','", String.join("','", conditionLi.toArray(new String[conditionLi.size()])));
+                        condition = String.join("','", String.join("','", conditionLi.toArray(new String[0])));
                         conditionList.add(String.format("%s in ('%s')", entry.getKey(), condition));
                         break;
                     case "not in":
                         conditionLi = (List<String>) val[0];
-                        condition = String.join("','", String.join("','", conditionLi.toArray(new String[conditionLi.size()])));
+                        condition = String.join("','", String.join("','", conditionLi.toArray(new String[0])));
                         conditionList.add(String.format("%s not in ('%s')", entry.getKey(), condition));
                         break;
                     case "like":

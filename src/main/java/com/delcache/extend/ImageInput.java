@@ -4,36 +4,36 @@ import org.springframework.util.StringUtils;
 
 public class ImageInput {
     public static String show(String[] images, String name, int count) {
-        String html = "<div class=\"fileinput-box-list\" data-max=\"" + String.valueOf(count) + "\">";
+        StringBuilder html = new StringBuilder("<div class=\"fileinput-box-list\" data-max=\"" + String.valueOf(count) + "\">");
         String newName = name;
         for (int i = 0; i < images.length; i++) {
             String image = images[i];
             if (count != 1) {
                 newName = name + "[" + String.valueOf(i) + "]";
             }
-            html += "<div class=\"fileinput-box\">" +
-                    "<img src=\"" + image + "\">" +
-                    "<input type=\"hidden\" name=\"" + newName + "\" value=\"" + image + "\">" +
-                    "<div class=\"fileinput-button\">" +
-                    "<div class=\"plus-symbol\" style=\"display: none\">+</div>" +
-                    "<input class=\"fileinput-input\" type=\"file\" name=\"" + newName + "\">" +
-                    "</div>" +
-                    "<div class=\"file-remove-btn\">" +
-                    "<div class=\"btn btn-sm btn-danger\" style=\"font-size: 0.5rem;\">删除</div>" +
-                    "</div></div>";
+            html.append("<div class=\"fileinput-box\">")
+                    .append("<img src=\"").append(image).append("\">")
+                    .append("<input type=\"hidden\" name=\"").append(newName).append("\" value=\"").append(image).append("\">")
+                    .append("<div class=\"fileinput-button\">")
+                    .append("<div class=\"plus-symbol\" style=\"display: none\">+</div>")
+                    .append("<input class=\"fileinput-input\" type=\"file\" name=\"").append(newName).append("\">")
+                    .append("</div>")
+                    .append("<div class=\"file-remove-btn\">")
+                    .append("<div class=\"btn btn-sm btn-danger\" style=\"font-size: 0.5rem;\">删除</div>")
+                    .append("</div></div>");
         }
         if (images.length < count) {
             if (count != 1) {
                 newName = name + "_add[]";
             }
-            html += "<div class=\"fileinput-box\">" +
-                    "<div class=\"fileinput-button\">" +
-                    "<div class=\"plus-symbol\"> +</div >" +
-                    "<input class=\"fileinput-input add-new\" type=\"file\" name =\"" + newName + "\" data-name=\"" + name + "_add\">" +
-                    "</div></div>";
+            html.append("<div class=\"fileinput-box\">")
+                    .append("<div class=\"fileinput-button\">")
+                    .append("<div class=\"plus-symbol\">+</div >")
+                    .append("<input class=\"fileinput-input add-new\" type=\"file\" name =\"").append(newName).append("\" data-name=\"").append(name).append("_add\">")
+                    .append("</div></div>");
         }
-        html += "</div>";
-        return html;
+        html.append("</div>");
+        return html.toString();
     }
 
     public static String show(String value, String name, int count) {
