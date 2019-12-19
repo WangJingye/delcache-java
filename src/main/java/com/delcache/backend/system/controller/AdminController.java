@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class AdminController extends BaseController {
             params.put("avatar", avatar);
             admin.load(params);
             Db.table(Admin.class).save(admin);
-            return this.success("密码已重置");
+            return this.success("修改成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
         }
@@ -128,6 +129,7 @@ public class AdminController extends BaseController {
             params.put("avatar", avatar);
             user.load(params);
             Db.table(Admin.class).save(user);
+            request.getSession().setAttribute("user", user);
             return this.success("修改成功");
         } catch (Exception e) {
             return this.error(e.getMessage());
@@ -147,6 +149,7 @@ public class AdminController extends BaseController {
                 throw new Exception("新密码与验证密码不一致～");
             }
             this.adminService.changePassword(user, request.getParameter("newPassword"));
+            request.getSession().removeAttribute("user");
             return this.success("密码已重置");
         } catch (Exception e) {
             return this.error(e.getMessage());

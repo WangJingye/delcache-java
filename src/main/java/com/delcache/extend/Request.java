@@ -101,13 +101,15 @@ public class Request {
             }
             List<String> keys = this.parameters.get(name);
             int i = 0;
-            for (String key : keys) {
-                int k = this.getKeyAndName(key).getKey();
-                if (k == -1) {
-                    k = i;
-                    i++;
+            if (keys != null) {
+                for (String key : keys) {
+                    int k = this.getKeyAndName(key).getKey();
+                    if (k == -1) {
+                        k = i;
+                        i++;
+                    }
+                    result.put(k, this.httpServletRequest.getParameter(key));
                 }
-                result.put(k, this.httpServletRequest.getParameter(key));
             }
             return String.join(",", result.values());
         } catch (Exception e) {

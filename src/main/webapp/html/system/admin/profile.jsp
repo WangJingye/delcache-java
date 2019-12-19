@@ -42,7 +42,7 @@
             <div class="form-group">
                 <label class="col-sm-4 control-label">个人头像</label>
                 <div class="col-sm-8">
-                    <%= ImageInput.show(user.getAvatar(), "avatar",9)%>
+                    <%= ImageInput.show(user.getAvatar(), "avatar")%>
                 </div>
             </div>
             <div class="form-group">

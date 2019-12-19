@@ -193,6 +193,7 @@ public class Db {
             Field[] fields = clazz.getDeclaredFields();
             if (!primaryKey.isEmpty()) {
                 for (Field field : fields) {
+                    //取主键ID的字段
                     Id id = field.getAnnotation(Id.class);
                     if (id == null) {
                         continue;
@@ -201,6 +202,7 @@ public class Db {
                     PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
                     Method setMethod = pd.getReadMethod();
                     Object res = setMethod.invoke(t);
+                    //判断主键ID没有值
                     if (Integer.parseInt(res.toString()) == 0) {
                         isNew = true;
                         break;

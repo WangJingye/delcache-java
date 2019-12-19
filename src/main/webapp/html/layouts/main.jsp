@@ -18,7 +18,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= title%></title>
+    <title><%= title%>
+    </title>
     <link href="/static/plugin/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/bootstrap4.css" rel="stylesheet">
     <link href="/static/css/select2.min.css" rel="stylesheet">
@@ -60,8 +61,11 @@
                         <% }%>
                     </ul>
                     <ul class="navbar-nav navbar-right nav">
-                        <li class="dropdown"><a class="nav-link dropdown-toggle" href="javascript:void(0)" role="button"
-                                                data-toggle="dropdown"><span>${user.realname}</span></a>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" role="button"
+                               data-toggle="dropdown">
+                                <span>${user.realname}</span>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="<%= UrlManager.createUrl("system/admin/profile") %>">个人信息</a></li>
                                 <li><a href="<%= UrlManager.createUrl("logout") %>">登出</a></li>

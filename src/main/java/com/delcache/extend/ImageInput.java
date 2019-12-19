@@ -38,6 +38,9 @@ public class ImageInput {
 
     public static String show(String value, String name, int count) {
         String[] images = StringUtils.isEmpty(value) ? new String[]{} : value.split(",");
+        if (count == 1) {
+            images = new String[]{value};
+        }
         return ImageInput.show(images, name, count);
     }
 
