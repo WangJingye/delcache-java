@@ -12,7 +12,7 @@ import java.util.*;
 public class BaseService extends com.delcache.common.service.BaseService {
 
     @Autowired
-    BaseDao dao;
+    BaseDao baseDao;
 
     public Map<String, Object> pagination(Db selector, Map<String, Object> params) {
         if (!StringUtils.isEmpty(params.get("page"))) {
@@ -21,8 +21,7 @@ public class BaseService extends com.delcache.common.service.BaseService {
         if (!StringUtils.isEmpty(params.get("pageSize"))) {
             selector.pageSize = Integer.parseInt(params.get("pageSize").toString());
         }
-        selector.firstRow = (selector.page - 1) * selector.pageSize;
-        selector.listRow = selector.pageSize;
+        selector.limit(String.valueOf((selector.page - 1) * selector.pageSize) + "," + String.valueOf(selector.pageSize));
         Map<String, Object> result = new HashMap<>();
         Map<String, Integer> pagination = new HashMap<>();
         int total = selector.count();

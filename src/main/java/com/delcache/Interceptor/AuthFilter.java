@@ -25,18 +25,15 @@ import java.util.Map;
  */
 public class AuthFilter implements HandlerInterceptor {
 
-    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         //  后台session控制
         return AuthFilter(request, response, o);
     }
 
-    @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse response, Object o, ModelAndView modelAndView) throws Exception {
 
     }
 
-    @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse response, Object o, Exception e) throws Exception {
 
     }
@@ -130,7 +127,7 @@ public class AuthFilter implements HandlerInterceptor {
         Menu currentMenu = (Menu) Db.table(Menu.class).where("url", uri).find();
         Admin user = (Admin) request.getSession().getAttribute("user");
         String sql = "select a.* from tbl_role_menu as a left join tbl_role_admin as b on b.role_id = a.role_id where b.admin_id=\"" + user.getAdminId() + "\" and a.menu_id=\"" + currentMenu.getId() + "\"";
-        RoleMenu roleMenu = (RoleMenu) Db.table(RoleMenu.class).find(sql);
+        Map<String, Object> roleMenu = (Map<String, Object>) Db.table(Map.class).find(sql);
         if (roleMenu == null) {
             return false;
         }

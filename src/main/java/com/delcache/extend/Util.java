@@ -1,11 +1,12 @@
 package com.delcache.extend;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -258,4 +259,50 @@ public class Util {
         }
         return ip.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip;
     }
+
+    /**
+     * 将对象的大写转换为下划线加小写，例如：userName-->user_name
+     *
+     * @param param
+     * @return
+     */
+    public static String toUnderlineString(String param) {
+        if (StringUtils.isEmpty(param)) {
+            return "";
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (i > 0 && Character.isUpperCase(c)) {
+                sb.append("_");
+            }
+            sb.append(Character.toLowerCase(c));  //统一都转小写
+        }
+        return sb.toString();
+
+    }
+
+    public static String toCamelName(String name) {
+        StringBuilder result = new StringBuilder();
+        // 快速检查
+        if (StringUtils.isEmpty(name)) {
+            // 没必要转换
+            return "";
+        }
+        // 用下划线将原始字符串分割
+        String camels[] = name.split("_");
+        for (String camel : camels) {
+            // 跳过原始字符串中开头、结尾的下换线或双重下划线
+            if (camel.isEmpty()) {
+                continue;
+            }
+
+            // 驼峰片段，首字母大写
+            result.append(camel.substring(0, 1).toUpperCase());
+            result.append(camel.substring(1));
+        }
+        return result.toString();
+    }
+
 }

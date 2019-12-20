@@ -1,27 +1,13 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_role_menu")
-@DynamicInsert()
 public class RoleMenu extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "menu_id")
     private int menuId;
 
-    @Column(name = "role_id")
     private int roleId;
 
-    @Column(name = "create_time")
     private int createTime;
 
     public int getId() {

@@ -1,31 +1,18 @@
 package com.delcache.common.dao;
 
-import com.delcache.common.entity.BaseEntity;
-import org.hibernate.SessionFactory;
-
-import java.util.List;
-
 public interface BaseDao {
 
-    Object find(String hql);
+    int insert(String sql);
 
-    Object find(String sql, Class clazz);
+    int delete(String sql);
 
-    Object findAll(String hql, int firstRow, int listRow);
+    int update(String sql);
 
-    Object findAll(String sql, Class clazz, int firstRow, int listRow);
+    void batchInsert(String sql);
 
-    Integer count(String hql);
+    Object findAll(String sql,Class clazz);
 
-    void save(BaseEntity t);
+    Object find(String sql,Class clazz);
 
-    int update(String hql);
-
-    void multiInsert(List entities);
-
-    void delete(String hql);
-
-    int updateSql(String sql);
-
-    SessionFactory getSessionFactory();
+    int count(String sql);
 }

@@ -1,58 +1,33 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_admin")
-@DynamicInsert()
 public class Admin extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "admin_id")
     private int adminId;
 
-    @NotBlank(message = "用户名不能为空")
-    @Column(name = "username")
     private String username;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "realname")
     private String realname;
 
-    @Column(name = "mobile")
     private String mobile;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = "salt")
     private String salt;
 
-    @Column(name = "identity")
     private int identity;
 
-    @Column(name = "last_login_time")
     private int lastLoginTime;
 
-    @Column(name = "passwd_modify_time")
     private int passwdModifyTime;
 
-    @Column(name = "status")
     private int status;
 
-    @Column(name = "create_time")
     private int createTime;
 
-    @Column(name = "update_time")
     private int updateTime;
 
     public Integer getAdminId() {

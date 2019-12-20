@@ -1,46 +1,24 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_menu")
-@DynamicInsert()
 public class Menu extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @NotBlank(message = "菜单名称不能为空")
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "url")
     private String url;
 
-    @Column(name = "remark")
     private String remark;
 
-    @Column(name = "icon")
     private String icon;
 
-    @Column(name = "parent_id")
     private int parentId;
 
-    @Column(name = "sort")
     private int sort;
 
-    @Column(name = "status")
     private int status;
 
-    @Column(name = "create_time")
     private int createTime;
 
-    @Column(name = "update_time")
     private int updateTime;
 
     public int getId() {

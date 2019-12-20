@@ -1,47 +1,27 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_site_info")
-@DynamicInsert()
 public class SiteInfo extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "mobile")
     private String mobile;
 
-    @Column(name = "default_password")
     private String defaultPassword;
 
-    @Column(name = "web_host")
     private String webHost;
 
-    @Column(name = "web_ip")
     private String webIp;
 
-    @Column(name = "wechat_app_id")
     private String wechatAppId;
 
-    @Column(name = "wechat_app_secret")
     private String wechatAppSecret;
 
-    @Column(name = "wechat_mch_id")
     private String wechatMchId;
 
-    @Column(name = "wechat_pay_key")
     private String wechatPayKey;
 
-    @Column(name = "create_time")
     private int createTime;
 
-    @Column(name = "update_time")
     private int updateTime;
 
     public int getId() {

@@ -99,7 +99,6 @@ public class MenuService extends BaseService {
                 if (menu.getUrl().isEmpty()) {
                     for (Menu child : childList) {
                         if (!StringUtils.isEmpty(child.getUrl())) {
-                            this.getSessionFactory().getCurrentSession().evict(menu);
                             menu.setUrl(child.getUrl());
                             break;
                         }
@@ -152,7 +151,6 @@ public class MenuService extends BaseService {
                 if (menu.getUrl().isEmpty()) {
                     for (Menu child : children) {
                         if (!StringUtils.isEmpty(child.getUrl())) {
-                            this.getSessionFactory().getCurrentSession().evict(menu);
                             menu.setUrl(child.getUrl());
                             break;
                         }

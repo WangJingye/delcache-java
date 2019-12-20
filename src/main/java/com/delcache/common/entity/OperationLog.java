@@ -1,35 +1,19 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_operation_log")
-@DynamicInsert()
 public class OperationLog extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "url")
     private String url;
 
-    @Column(name = "post")
     private String post;
 
-    @Column(name = "refer_url")
     private String referUrl;
 
-    @Column(name = "ip")
     private String ip;
 
-    @Column(name = "operator_id")
     private int operatorId;
 
-    @Column(name = "create_time")
     private int createTime;
 
     public int getId() {

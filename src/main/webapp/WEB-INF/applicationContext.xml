@@ -41,35 +41,19 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     </bean>
 
 
-    <!-- 配置hibernate session工厂 -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-                <prop key="current_session_context_class">thread</prop>
-                <prop key="hibernate.connection.driver_class">${jdbc.driver}</prop>
-                <prop key="javax.persistence.validation.mode">none</prop>
-            </props>
-        </property>
-
-        <!-- 自动扫描注解方式配置的hibernate类文件 -->
-        <property name="packagesToScan">
-            <list>
-                <!-- 此处与entity实体路径对应 -->
-                <value>com.delcache.common.entity</value>
-            </list>
-        </property>
     </bean>
+    <!--<bean id="baseDao" class="com.delcache.common.dao.impl.BaseDaoImpl">-->
+        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--</bean>-->
     <!-- 注解方式配置事物 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!-- 配置事务管理器 -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
+
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 

@@ -1,27 +1,13 @@
 package com.delcache.common.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "tbl_role_admin")
-@DynamicInsert()
 public class RoleAdmin extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "admin_id")
     private int adminId;
 
-    @Column(name = "role_id")
     private int roleId;
 
-    @Column(name = "create_time")
     private int createTime;
 
     public int getId() {
@@ -31,6 +17,7 @@ public class RoleAdmin extends BaseEntity {
     public void setId(int id) {
         this.id = id;
     }
+
     public int getAdminId() {
         return adminId;
     }
