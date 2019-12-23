@@ -66,5 +66,20 @@ public class {{model}}Controller extends BaseController {
         } catch (Exception e) {
             return this.error(e.getMessage());
         }
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "{{module}}/{{modelRoute}}/delete", method = RequestMethod.POST)
+    public Object delete(HttpServletRequest request) {
+        try {
+            String id = request.getParameter("id");
+            if (StringUtils.isEmpty(id)) {
+                throw new Exception("参数有误");
+            }
+            Db.table({{model}}.class).where("id",id).delete();
+            return this.success("操作成功");
+        } catch (Exception e) {
+            return this.error(e.getMessage());
+        }
     }{{statusAction}}
 }

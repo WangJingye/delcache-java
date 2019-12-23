@@ -75,8 +75,13 @@ public class AuthFilter implements HandlerInterceptor {
         if (user.getStatus() == 0) {
             return this.redirectNoAuth(request, response);
         }
+        String uri = UrlManager.parseRequestUrl(request.getRequestURI());
+        Menu currentMenu = (Menu) Db.table(Menu.class).where("url", uri).find();
+        if (currentMenu == null) {
+            return this.redirectNotFound(request, response);
+        }
         //验证用户权限,identity = 1 为超级管理员
-        if (user.getIdentity() == 0 && !this.checkUserAuth(request)) {
+        if (user.getIdentity() == 0 && !this.checkUserAuth(request, currentMenu)) {
             return this.redirectNoAuth(request, response);
         }
         if (UrlManager.isAjax(request)) {
@@ -122,9 +127,21 @@ public class AuthFilter implements HandlerInterceptor {
         return false;
     }
 
-    private Boolean checkUserAuth(HttpServletRequest request) {
-        String uri = UrlManager.parseRequestUrl(request.getRequestURI());
-        Menu currentMenu = (Menu) Db.table(Menu.class).where("url", uri).find();
+    private Boolean redirectNotFound(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("text/html");
+        response.setCharacterEncoding("utf-8");
+        if (UrlManager.isAjax(request)) {
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            out.print(Util.objectToString(Util.error("您访问的页面不在权限列表中")));
+            out.close();
+        } else {
+            throw new Exception("您访问的页面不在权限列表中");
+        }
+        return false;
+    }
+
+    private Boolean checkUserAuth(HttpServletRequest request, Menu currentMenu) {
         Admin user = (Admin) request.getSession().getAttribute("user");
         String sql = "select a.* from tbl_role_menu as a left join tbl_role_admin as b on b.role_id = a.role_id where b.admin_id=\"" + user.getAdminId() + "\" and a.menu_id=\"" + currentMenu.getId() + "\"";
         Map<String, Object> roleMenu = (Map<String, Object>) Db.table(Map.class).find(sql);

@@ -49,7 +49,9 @@
                 <a href="<%= UrlManager.createUrl("{{module}}/{{modelRoute}}/edit?id="+ String.valueOf(v.get{{u_PrimaryKey}}())) %>">
                     <div class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i> 编辑</div>
                 </a>
-                <div class="btn btn-danger btn-sm remove-btn" data-id="<%= v.get{{u_PrimaryKey}}() %>">
+                <div class="btn btn-danger btn-sm remove-btn"
+                     data-url="<%= UrlManager.createUrl("{{module}}/{{modelRoute}}/delete") %>"
+                     data-id="<%= v.get{{u_PrimaryKey}}() %>">
                     <i class="glyphicon glyphicon-trash"></i> 删除
                 </div>{{statusIndex}}
             </td>

@@ -15,7 +15,7 @@ public class UrlManager {
 
     //解析request的url
     public static String parseRequestUrl(String url) {
-        if (url.equals("/")) {
+        if ("/".equals(url)) {
             return "/system/menu/index";
         }
         return "/" + Util.stringTrim(Util.stringTrim(url, "/"), ".html");
@@ -28,7 +28,7 @@ public class UrlManager {
     }
 
     public static String createUrl(String uri, Map<String, String> params) {
-        if (uri.equals("/")) {
+        if ("/".equals(uri)) {
             return uri;
         }
         String[] uriArr = uri.split("\\?");

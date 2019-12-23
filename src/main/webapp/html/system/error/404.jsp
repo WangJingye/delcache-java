@@ -1,5 +1,6 @@
 <%@ page import="com.delcache.extend.UrlManager" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<% String url = request.getAttribute("url").toString();%>
 <div id="exception_contain">
     <div id="showInfo">
         <h1>Oops!</h1>
@@ -8,7 +9,7 @@
             ${message}
         </p>
         <p id="page-jump">页面将在<span id="time_span">5</span>秒后跳转到<a id="jump_url"
-                                                                   href="<%= UrlManager.createUrl("/")%>">主页!</a>
+                                                                   href="<%= UrlManager.createUrl(url)%>">主页!</a>
         </p>
     </div>
     <div id="img">

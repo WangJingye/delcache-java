@@ -21,11 +21,11 @@ public class ErrorController extends BaseController {
         response.setStatus(200);
         response.setContentType("text/html");
         if (UrlManager.isAjax(request)) {
-            return new ModelAndView(new MappingJackson2JsonView(), Util.error("您所请求的页面不存在", 404));
+            return new ModelAndView(new MappingJackson2JsonView(), Util.error("您所请求的地址不存在", 404));
         }
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/error/404");
-        mv.addObject("message", "您所请求的页面不存在");
+        mv.addObject("message", "您所请求的地址不存在");
         return mv;
     }
 
@@ -35,6 +35,10 @@ public class ErrorController extends BaseController {
         if (StringUtils.isEmpty(message)) {
             message = "未知错误";
         }
+        String url = request.getParameter("redirect");
+        if (StringUtils.isEmpty(url)) {
+            url = "/";
+        }
         response.setContentType("application/json");
         if (UrlManager.isAjax(request)) {
             return new ModelAndView(new MappingJackson2JsonView(), Util.error(message, 400));
@@ -43,6 +47,7 @@ public class ErrorController extends BaseController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("system/error/404");
         mv.addObject("message", message);
+        mv.addObject("url", url);
         return mv;
     }
 

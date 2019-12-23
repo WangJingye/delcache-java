@@ -546,8 +546,7 @@ class Generate extends ObjectAccess
             if ($field == $this->primaryKey) {
                 continue;
             }
-            $declare .= PHP_EOL . PHP_EOL . '    @Column(name = "' . $field . '")';
-            $declare .= PHP_EOL . '    private ' . $type . ' ' . $this->getKeyAction1($field) . ';';
+            $declare .= PHP_EOL .PHP_EOL . '    private ' . $type . ' ' . $this->getKeyAction1($field) . ';';
 
         }
         $filename = $dir . '/' . $this->model . '.java';

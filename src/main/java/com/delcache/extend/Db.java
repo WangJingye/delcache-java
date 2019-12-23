@@ -125,14 +125,14 @@ public class Db {
             }
         }
 
-        String sql = "";
+        StringBuilder sql = new StringBuilder();
         if (conditionList.size() > 0) {
-            sql += " where " + String.join(" and ", conditionList);
+            sql.append(" where ").append(String.join(" and ", conditionList));
         }
         if (!this.order.isEmpty()) {
-            sql += " order by " + this.order;
+            sql.append(" order by ").append(this.order);
         }
-        return sql;
+        return sql.toString();
 
     }
 
@@ -227,13 +227,17 @@ public class Db {
      * 更新
      */
     public void update(String key, Object value) {
+        this.getField();
         if (StringUtils.isEmpty(value)) {
             value = "";
         }
-        String sql = "update " + this.table + " set ";
-        sql += key + "='" + value.toString() + "'";
-        sql += this.whereSql();
-        dao.update(sql);
+        StringBuilder sql = new StringBuilder("update ").append(this.table).append(" set ");
+        sql.append("`").append(key).append("` = '").append(value.toString()).append("'");
+        if (this.fields.contains("update_time")) {
+            sql.append(", update_time = '").append(Util.time()).append("'");
+        }
+        sql.append(this.whereSql());
+        dao.update(sql.toString());
     }
 
     /**
