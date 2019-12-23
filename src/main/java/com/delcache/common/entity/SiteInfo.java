@@ -4,6 +4,8 @@ public class SiteInfo extends BaseEntity {
 
     private int id;
 
+    private String title;
+
     private String mobile;
 
     private String defaultPassword;
@@ -30,6 +32,14 @@ public class SiteInfo extends BaseEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getMobile() {

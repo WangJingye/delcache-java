@@ -3,6 +3,12 @@
 <form class="form-horizontal col-lg-8 col-sm-8 col-md-6" id="save-form"
       action="<%= UrlManager.createUrl("erp/site-info/edit") %>" method="post">
     <div class="form-group">
+        <label class="col-sm-3 control-label">网站标题</label>
+        <div class="col-sm-9">
+            <input type="text" name="title" class="form-control" value="${data.title}" placeholder="请输入网站标题">
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-3 control-label">手机号</label>
         <div class="col-sm-9">
             <input type="text" name="mobile" class="form-control" value="${data.mobile}" placeholder="请输入手机号">

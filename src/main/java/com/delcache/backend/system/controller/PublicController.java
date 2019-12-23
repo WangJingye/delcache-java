@@ -2,6 +2,7 @@ package com.delcache.backend.system.controller;
 
 import com.delcache.backend.common.BaseController;
 import com.delcache.common.entity.Admin;
+import com.delcache.common.entity.SiteInfo;
 import com.delcache.extend.Db;
 import com.delcache.extend.Encrypt;
 import com.delcache.extend.Util;
@@ -21,7 +22,8 @@ public class PublicController extends BaseController {
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(HttpServletRequest request, Model model) {
-        model.addAttribute("title", "后台管理系统");
+        SiteInfo siteInfo = (SiteInfo) Db.table(SiteInfo.class).find();
+        model.addAttribute("title", siteInfo.getTitle());
         return "system/public/login";
     }
 

@@ -298,6 +298,12 @@ public class Db {
                     if (StringUtils.isEmpty(value)) {
                         value = "";
                     }
+                    if (Util.parseInt(value) == 0 && "create_time".equals(column)) {
+                        value = String.valueOf(Util.time());
+                    }
+                    if (Util.parseInt(value) == 0 && "update_time".equals(column)) {
+                        value = String.valueOf(Util.time());
+                    }
                     params.add(value.toString());
                 }
                 entityParams.add("('" + String.join("','", params.toArray(new String[0])) + "')");
@@ -330,17 +336,6 @@ public class Db {
         }
     }
 
-    public void setObjectFieldValue(Object obj, Field field, Object value) {
-        try {
-            field.setAccessible(true);
-            PropertyDescriptor pd = new PropertyDescriptor(field.getName(), obj.getClass());
-            Method setMethod = pd.getWriteMethod();
-            setMethod.invoke(obj, value);
-        } catch (Exception e) {
-            //塞不进去就不塞了
-        }
-    }
-
     public String buildInsertSql(Object entity) {
         StringBuilder sql = new StringBuilder("insert into ").append(this.table).append("(`");
         List<String> params = new ArrayList<>();
@@ -367,6 +362,12 @@ public class Db {
                     Object value = getMethod.invoke(entity);
                     if (StringUtils.isEmpty(value)) {
                         value = "";
+                    }
+                    if (Util.parseInt(value) == 0 && "create_time".equals(column)) {
+                        value = String.valueOf(Util.time());
+                    }
+                    if (Util.parseInt(value) == 0 && "update_time".equals(column)) {
+                        value = String.valueOf(Util.time());
                     }
                     params.add(value.toString());
                     keys.add(column);
@@ -408,6 +409,10 @@ public class Db {
                     } else {
                         if (StringUtils.isEmpty(value)) {
                             value = "";
+
+                        }
+                        if ("update_time".equals(column)) {
+                            value = String.valueOf(Util.time());
                         }
                         params.add("`" + column + "` = '" + value + "'");
                     }
