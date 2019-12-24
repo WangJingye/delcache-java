@@ -28,25 +28,22 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <property name="jdbcUrl" value="${jdbc.url}"/>
         <property name="user" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <property name="maxPoolSize" value="20"/>
-        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="${ds.maxPoolSize}"/>
+        <property name="minPoolSize" value="${ds.minPoolSize}"/>
         <!-- 初始化建立的连接数 -->
-        <property name="initialPoolSize" value="10"/>
+        <property name="initialPoolSize" value="${ds.initialPoolSize}"/>
         <!-- 最大空闲时间，120秒内未被使用的连接将被丢弃 -->
-        <property name="maxIdleTime" value="120"/>
+        <property name="maxIdleTime" value="${ds.maxIdleTime}"/>
         <!-- 当连接池耗尽，且未达到最大连接数时，一次获取的连接数 -->
-        <property name="acquireIncrement" value="2"/>
-        <!-- 空闲检查时间间隔， 每隔120秒检查连接池里的空闲连接 ，单位是秒-->
-        <property name="idleConnectionTestPeriod" value="60"/>
+        <property name="acquireIncrement" value="${ds.acquireIncrement}"/>
+        <!-- 空闲检查时间间隔， 每隔60秒检查连接池里的空闲连接 ，单位是秒-->
+        <property name="idleConnectionTestPeriod" value="${ds.idleConnectionTestPeriod}"/>
     </bean>
 
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!--<bean id="baseDao" class="com.delcache.common.dao.impl.BaseDaoImpl">-->
-        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
-    <!--</bean>-->
     <!-- 注解方式配置事物 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!-- 配置事务管理器 -->
@@ -54,13 +51,10 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="persistenceExceptionTranslationPostProcessor"
-          class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
-
     <bean name="handlerMapping"
           class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
     </bean>
-    <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
+    <!-- 配置文件上传 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- 默认编码 -->
