@@ -1,15 +1,13 @@
 <%@ page import="com.delcache.extend.UrlManager" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <% String url = request.getAttribute("url").toString();%>
+<meta name="decorator" content="/html/layouts/empty.jsp">
 <div id="exception_contain">
     <div id="showInfo">
         <h1>Oops!</h1>
         <p>请求失败!</p>
         <p style="color: #FF6666;">
             ${message}
-            <?php if ($this->message=='您暂未登陆'):?>
-            <a href="<%= UrlManager.createUrl("login/index")%>">返回登陆</a>
-            <?php endif;?>
         </p>
         <p id="page-jump">页面将在<span id="time_span">5</span>秒后跳转到<a id="jump_url"
                                                                    href="<%= UrlManager.createUrl(url)%>">主页!</a>
@@ -77,6 +75,7 @@
         max-width: 220px;
     }
 </style>
+<custom_script>
 <script>
     window.onload = function () {
         var jump_url = document.getElementById('jump_url').href;
@@ -92,3 +91,4 @@
         }, 5000);
     }
 </script>
+</custom_script>

@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class PublicController extends BaseController {
 
-
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(HttpServletRequest request, Model model) {
         SiteInfo siteInfo = (SiteInfo) Db.table(SiteInfo.class).find();

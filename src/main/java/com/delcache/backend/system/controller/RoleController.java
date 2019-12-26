@@ -25,12 +25,13 @@ public class RoleController extends BaseController {
             put("0", "禁用");
         }
     };
+
     @Autowired
     RoleService roleService;
 
     @RequestMapping(value = "system/role/index", method = RequestMethod.GET)
     public String index(HttpServletRequest request, Model model) {
-        Map<String, Object> params =Request.getInstance(request).getParams();
+        Map<String, Object> params = Request.getInstance(request).getParams();
         Map<String, Object> res = this.roleService.getList(params);
         model.addAttribute("list", res.get("list"));
         model.addAttribute("pagination", res.get("pagination"));

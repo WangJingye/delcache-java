@@ -24,6 +24,7 @@ public class MenuController extends BaseController {
             put("0", "禁用");
         }
     };
+
     @Autowired
     MenuService menuService;
 

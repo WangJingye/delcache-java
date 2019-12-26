@@ -15,27 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class ErrorController extends BaseController {
 
-
-    @RequestMapping(value = "404")
-    public Object error404(HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(200);
-        response.setContentType("text/html");
-        if (UrlManager.isAjax(request)) {
-            return new ModelAndView(new MappingJackson2JsonView(), Util.error("您所请求的地址不存在", 404));
-        }
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("system/error/404");
-        mv.addObject("message", "您所请求的地址不存在");
-        return mv;
-    }
-
     @RequestMapping(value = "error")
     public Object error(HttpServletRequest request, HttpServletResponse response) {
-        String message = request.getParameter("message");
+        response.setStatus(200);
+        response.setContentType("text/html");
+        String message = (String) request.getAttribute("message");
         if (StringUtils.isEmpty(message)) {
-            message = "未知错误";
+            message = "您所请求的地址不存在";
         }
-        String url = request.getParameter("redirect");
+        String url = (String) request.getAttribute("redirect");
         if (StringUtils.isEmpty(url)) {
             url = "/";
         }
@@ -45,7 +33,7 @@ public class ErrorController extends BaseController {
         }
         response.setContentType("text/html");
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("system/error/404");
+        mv.setViewName("system/error/index");
         mv.addObject("message", message);
         mv.addObject("url", url);
         return mv;

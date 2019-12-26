@@ -1,5 +1,6 @@
 <%@ page import="com.delcache.extend.UrlManager" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<meta name="decorator" content="/html/layouts/login.jsp">
 <div class="container">
     <div class="login-head"><h2>${title}</h2></div>
     <div class="login-box">

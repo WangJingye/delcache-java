@@ -27,8 +27,7 @@ public class SiteInfoController extends BaseController {
     public Object edit(HttpServletRequest request) {
         try {
             Map<String, Object> params = Request.getInstance(request).getParams();
-            SiteInfo data;
-            data = (SiteInfo) Db.table(SiteInfo.class).find();
+            SiteInfo data = (SiteInfo) Db.table(SiteInfo.class).find();
             if (data == null) {
                 data = new SiteInfo();
             }

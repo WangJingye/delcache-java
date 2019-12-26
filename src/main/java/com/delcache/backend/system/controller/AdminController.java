@@ -22,12 +22,14 @@ import java.util.Map;
 
 @Controller
 public class AdminController extends BaseController {
+
     private Map<String, String> statusList = new LinkedHashMap<String, String>() {
         {
             put("1", "可用");
             put("0", "禁用");
         }
     };
+
     @Autowired
     AdminService adminService;
 
