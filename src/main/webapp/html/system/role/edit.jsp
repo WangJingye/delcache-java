@@ -1,4 +1,4 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
+<%@ page import="com.delcache.component.UrlManager" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <form class="form-horizontal col-lg-8 col-sm-8 col-md-6" id="save-form"
       action="<%= UrlManager.createUrl("system/role/edit") %>" method="post">

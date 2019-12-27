@@ -1,5 +1,5 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
-<%@ page import="com.delcache.extend.Util" %>
+<%@ page import="com.delcache.component.UrlManager" %>
+<%@ page import="com.delcache.component.Util" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>

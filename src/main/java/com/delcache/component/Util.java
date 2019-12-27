@@ -1,12 +1,31 @@
-package com.delcache.extend;
+package com.delcache.component;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -305,4 +324,134 @@ public class Util {
         return result.toString();
     }
 
+    public static String sendRequest(String url, Map<String, String> data, String method, Map<String, String> headers) {
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpResponse response;
+            if ("POST".equals(method)) {
+                HttpPost request = new HttpPost(url);
+                if (headers != null) {
+                    for (Map.Entry<String, String> header : headers.entrySet()) {
+                        request.setHeader(header.getKey(), header.getValue());
+                    }
+                }
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(convertMap2NameValuePairs(data), "UTF-8");
+                request.setEntity(entity);
+                response = client.execute(request);
+            } else {
+                HttpGet request = new HttpGet(url);
+                if (headers != null) {
+                    for (Map.Entry<String, String> header : headers.entrySet()) {
+                        request.setHeader(header.getKey(), header.getValue());
+                    }
+                }
+                response = client.execute(request);
+            }
+
+            return EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String sendRequest(String url, String data, String method, Map<String, String> headers) {
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpResponse response;
+            if ("POST".equals(method)) {
+                HttpPost request = new HttpPost(url);
+                if (headers != null) {
+                    for (Map.Entry<String, String> header : headers.entrySet()) {
+                        request.setHeader(header.getKey(), header.getValue());
+                    }
+                }
+                StringEntity stringEntity = new StringEntity(data, "UTF-8");
+                request.setEntity(stringEntity);
+                response = client.execute(request);
+            } else {
+                HttpGet request = new HttpGet(url);
+                if (headers != null) {
+                    for (Map.Entry<String, String> header : headers.entrySet()) {
+                        request.setHeader(header.getKey(), header.getValue());
+                    }
+                }
+                response = client.execute(request);
+            }
+
+            return EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static List<NameValuePair> convertMap2NameValuePairs(Map<String, String> data) {
+        List<NameValuePair> nvpList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            NameValuePair n = new BasicNameValuePair(entry.getKey(), entry.getValue());
+            nvpList.add(n);
+        }
+        return nvpList;
+    }
+
+    public static Map<String, Object> xmlToMap(String xml) {
+        try {
+            Document doc = DocumentHelper.parseText(xml);//将xml转为dom对象
+            Element root = doc.getRootElement();//获取根节点
+            return Dom2Map(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static Map Dom2Map(Element e) {
+        Map map = new HashMap();
+        List list = e.elements();
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                Element iter = (Element) list.get(i);
+                List mapList = new ArrayList();
+
+                if (iter.elements().size() > 0) {
+                    Map m = Dom2Map(iter);
+                    if (map.get(iter.getName()) != null) {
+                        Object obj = map.get(iter.getName());
+                        if (!obj.getClass().getName()
+                                .equals("java.util.ArrayList")) {
+                            mapList = new ArrayList();
+                            mapList.add(obj);
+                            mapList.add(m);
+                        }
+                        if (obj.getClass().getName()
+                                .equals("java.util.ArrayList")) {
+                            mapList = (List) obj;
+                            mapList.add(m);
+                        }
+                        map.put(iter.getName(), mapList);
+                    } else
+                        map.put(iter.getName(), m);
+                } else {
+                    if (map.get(iter.getName()) != null) {
+                        Object obj = map.get(iter.getName());
+                        if (!obj.getClass().getName()
+                                .equals("java.util.ArrayList")) {
+                            mapList = new ArrayList();
+                            mapList.add(obj);
+                            mapList.add(iter.getText());
+                        }
+                        if (obj.getClass().getName()
+                                .equals("java.util.ArrayList")) {
+                            mapList = (List) obj;
+                            mapList.add(iter.getText());
+                        }
+                        map.put(iter.getName(), mapList);
+                    } else
+                        map.put(iter.getName(), iter.getText());
+                }
+            }
+        } else
+            map.put(e.getName(), e.getText());
+        return map;
+    }
 }

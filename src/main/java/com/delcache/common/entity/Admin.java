@@ -1,7 +1,10 @@
 package com.delcache.common.entity;
 
+import com.delcache.component.PrimaryKey;
+
 public class Admin extends BaseEntity {
 
+    @PrimaryKey
     private int adminId;
 
     private String username;

@@ -1,4 +1,4 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;

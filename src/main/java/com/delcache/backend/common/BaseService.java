@@ -1,7 +1,7 @@
 package com.delcache.backend.common;
 
 import com.delcache.common.dao.BaseDao;
-import com.delcache.extend.Db;
+import com.delcache.component.Db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

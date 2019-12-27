@@ -1,4 +1,4 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
+<%@ page import="com.delcache.component.UrlManager" %>
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%
     Map<String, Integer> pagination = (Map<String, Integer>) request.getAttribute("pagination");

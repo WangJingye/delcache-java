@@ -1,45 +1,36 @@
 package com.delcache.console.controller;
 
-
-import com.delcache.common.entity.Admin;
 import com.delcache.common.entity.SiteInfo;
-import com.delcache.extend.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.delcache.common.entity.TestAdmin;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.beans.*;
 
 public class IndexController {
-    public static void main(String[] args) {
-        SiteInfo siteInfo = new SiteInfo();
-        Map<String, Object> map = new HashMap<>();
-        map.put("web_ip", "122222");
-
-        Class clazz = siteInfo.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Method[] methods = clazz.getDeclaredMethods();
-        Map<String, Method> methodMap = new HashMap<>();
-        for (Method method : methods) {
-            methodMap.put(method.getName(), method);
-        }
-        try {
-            for (Field field : fields) {
-                String f = field.getName();
-                String column = Util.toUnderlineString(f);
-                if (!map.containsKey(column)) {
-                    continue;
-                }
-                String setMethodName = "set" + Util.toCamelName(f);
-                System.out.println(setMethodName);
-                if (methodMap.containsKey(setMethodName)) {
-                    Object value = map.get(column);
-                    Method setMethod = methodMap.get(setMethodName);
-                    setMethod.invoke(siteInfo, value);
-                }
-            }
-        } catch (Exception e) {
-
-        }
+    public static void main(String[] args) throws Exception {
+        BeanInfo bif = Introspector.getBeanInfo(SiteInfo.class, Object.class);
+        PropertyDescriptor[] pd = bif.getPropertyDescriptors();
+//        for (int i = 0; i < pd.length; i++) {
+//            System.out.println(pd[i].getReadMethod().getName());
+//            System.out.println(pd[i].getPropertyType());
+//        }
+//        MethodDescriptor[] md = bif.getMethodDescriptors();
+//        for(int m = 0; m<md.length; m++){
+//            System.out.println("name:"+md[m].getName());
+//            System.out.println("method name:"+md[m].getMethod().getName());
+//            System.out.println("displayname:"+md[m].getDisplayName());
+//        }
+//        BeanDescriptor bd = bif.getBeanDescriptor();
+//        System.out.println("display name：" + bd.getDisplayName());
+//        System.out.println("name：" + bd.getName());
+//        EventSetDescriptor[] esd = bif.getEventSetDescriptors();
+//        for(int m=0;m<esd.length;m++){
+//            System.out.println("name:"+esd[m].getName());
+//            System.out.println("method name:"+esd[m].getGetListenerMethod().getName());
+//            System.out.println("method name:"+esd[m].getRemoveListenerMethod().getName());
+//            System.out.println("method name:"+esd[m].getAddListenerMethod().getName());
+//            System.out.println("displayname:"+esd[m].getDisplayName());
+//        }
     }
+
+
 }

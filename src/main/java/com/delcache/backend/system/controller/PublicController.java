@@ -3,9 +3,9 @@ package com.delcache.backend.system.controller;
 import com.delcache.backend.common.BaseController;
 import com.delcache.common.entity.Admin;
 import com.delcache.common.entity.SiteInfo;
-import com.delcache.extend.Db;
-import com.delcache.extend.Encrypt;
-import com.delcache.extend.Util;
+import com.delcache.component.Db;
+import com.delcache.component.Encrypt;
+import com.delcache.component.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -28,27 +28,23 @@ public class PublicController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public Object login(HttpServletRequest request) {
-        try {
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-                throw new Exception("用户名密码有误");
-            }
-            Admin admin = (Admin) Db.table(Admin.class).where("username", username).find();
-            if (admin == null || !admin.getPassword().equals(Encrypt.encryptPassword(password, admin.getSalt()))) {
-                throw new Exception("用户名密码有误");
-            }
-            if (admin.getStatus() == 0) {
-                throw new Exception("您的账号已禁用，请联系管理员～");
-            }
-            admin.setLastLoginTime(Util.time());
-            Db.table(Admin.class).save(admin);
-            request.getSession().setAttribute("user", admin);
-            return this.success("登录成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object login(HttpServletRequest request) throws Exception {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            throw new Exception("用户名密码有误");
         }
+        Admin admin = (Admin) Db.table(Admin.class).where("username", username).find();
+        if (admin == null || !admin.getPassword().equals(Encrypt.encryptPassword(password, admin.getSalt()))) {
+            throw new Exception("用户名密码有误");
+        }
+        if (admin.getStatus() == 0) {
+            throw new Exception("您的账号已禁用，请联系管理员～");
+        }
+        admin.setLastLoginTime(Util.time());
+        Db.table(Admin.class).save(admin);
+        request.getSession().setAttribute("user", admin);
+        return this.success("登录成功");
     }
 
     @RequestMapping(value = "logout")

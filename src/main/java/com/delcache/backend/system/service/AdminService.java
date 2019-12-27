@@ -2,9 +2,9 @@ package com.delcache.backend.system.service;
 
 import com.delcache.backend.common.BaseService;
 import com.delcache.common.entity.Admin;
-import com.delcache.extend.Db;
-import com.delcache.extend.Encrypt;
-import com.delcache.extend.Util;
+import com.delcache.component.Db;
+import com.delcache.component.Encrypt;
+import com.delcache.component.Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

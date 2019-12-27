@@ -1,4 +1,4 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

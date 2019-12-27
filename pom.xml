@@ -134,13 +134,26 @@
             <artifactId>sitemesh</artifactId>
             <version>3.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.13</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        
+    </dependencies>
     <build>
         <finalName>backend</finalName>
     </build>

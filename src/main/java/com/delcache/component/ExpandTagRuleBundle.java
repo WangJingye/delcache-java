@@ -1,4 +1,4 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import org.sitemesh.SiteMeshContext;
 import org.sitemesh.content.ContentProperty;

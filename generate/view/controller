@@ -47,39 +47,31 @@ public class {{model}}Controller extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "{{module}}/{{modelRoute}}/edit", method = RequestMethod.POST)
-    public Object edit(HttpServletRequest request) {
-        try {
-            Map<String, Object> params = Request.getInstance(request).getParams();
-            {{model}} data;
-            if (!StringUtils.isEmpty(params.get("id"))) {
-                data = ({{model}}) Db.table({{model}}.class).where("{{primaryKey}}", params.get("id")).find();
-                if (data == null) {
-                    throw new Exception("参数有误");
-                }
-            } else {
-                params.remove("id");
-                data = new {{model}}();
-            }{{parseFile}}
-            data.load(params);
-            Db.table({{model}}.class).save(data);
-            return this.success("操作成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
-        }
+    public Object edit(HttpServletRequest request) throws Exception {
+        Map<String, Object> params = Request.getInstance(request).getParams();
+        {{model}} data;
+        if (!StringUtils.isEmpty(params.get("id"))) {
+            data = ({{model}}) Db.table({{model}}.class).where("{{primaryKey}}", params.get("id")).find();
+            if (data == null) {
+                throw new Exception("参数有误");
+            }
+        } else {
+            params.remove("id");
+            data = new {{model}}();
+        }{{parseFile}}
+        data.load(params);
+        Db.table({{model}}.class).save(data);
+        return this.success("操作成功");
     }
     
     @ResponseBody
     @RequestMapping(value = "{{module}}/{{modelRoute}}/delete", method = RequestMethod.POST)
-    public Object delete(HttpServletRequest request) {
-        try {
-            String id = request.getParameter("id");
-            if (StringUtils.isEmpty(id)) {
-                throw new Exception("参数有误");
-            }
-            Db.table({{model}}.class).where("id",id).delete();
-            return this.success("操作成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object delete(HttpServletRequest request) throws Exception {
+        String id = request.getParameter("id");
+        if (StringUtils.isEmpty(id)) {
+            throw new Exception("参数有误");
         }
+        Db.table({{model}}.class).where("id",id).delete();
+        return this.success("操作成功");
     }{{statusAction}}
 }

@@ -1,4 +1,4 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import org.springframework.util.StringUtils;
 
@@ -37,9 +37,11 @@ public class ImageInput {
     }
 
     public static String show(String value, String name, int count) {
-        String[] images = StringUtils.isEmpty(value) ? new String[]{} : value.split(",");
+        String[] images;
         if (count == 1) {
-            images = new String[]{value};
+            images = StringUtils.isEmpty(value) ? new String[]{} : new String[]{value};
+        } else {
+            images = StringUtils.isEmpty(value) ? new String[]{} : value.split(",");
         }
         return ImageInput.show(images, name, count);
     }

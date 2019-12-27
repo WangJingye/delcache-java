@@ -1,4 +1,4 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
+<%@ page import="com.delcache.component.UrlManager" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <% String url = request.getAttribute("url").toString();%>
 <meta name="decorator" content="/html/layouts/empty.jsp">

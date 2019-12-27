@@ -409,17 +409,13 @@ class Generate extends ObjectAccess
             $statusAction = PHP_EOL . '
     @ResponseBody
     @RequestMapping(value = "' . $this->module . '/' . $this->getKeyRoute($this->model) . '/set-status", method = RequestMethod.POST)
-    public Object setStatus(HttpServletRequest request) {
-        try {
-            Map<String, Object> params = Request.getInstance(request).getParams();
-            if (Util.parseInt(params.get("id")) == 0) {
-                throw new Exception("参数有误");
-            }
-            Db.table(' . $this->model . '.class).where("' . $this->primaryKey . '", params.get("id")).update("status", params.get("status"));
-            return this.success("操作成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object setStatus(HttpServletRequest request) throws Exception {
+        Map<String, Object> params = Request.getInstance(request).getParams();
+        if (Util.parseInt(params.get("id")) == 0) {
+            throw new Exception("参数有误");
         }
+        Db.table(' . $this->model . '.class).where("' . $this->primaryKey . '", params.get("id")).update("status", params.get("status"));
+        return this.success("操作成功");
     }';
         }
         $str = str_replace('{{model}}', $this->model, $str);

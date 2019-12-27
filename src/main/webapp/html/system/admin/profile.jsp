@@ -1,5 +1,5 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
-<%@ page import="com.delcache.extend.ImageInput" %>
+<%@ page import="com.delcache.component.UrlManager" %>
+<%@ page import="com.delcache.component.ImageInput" %>
 <%@ page import="com.delcache.common.entity.Admin" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <% Admin user = (Admin) request.getAttribute("user");%>

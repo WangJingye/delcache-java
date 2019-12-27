@@ -3,9 +3,9 @@ package com.delcache.backend.system.controller;
 import com.delcache.backend.common.BaseController;
 import com.delcache.backend.system.service.RoleService;
 import com.delcache.common.entity.*;
-import com.delcache.extend.Db;
-import com.delcache.extend.Request;
-import com.delcache.extend.Util;
+import com.delcache.component.Db;
+import com.delcache.component.Request;
+import com.delcache.component.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,37 +57,29 @@ public class RoleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "system/role/edit", method = RequestMethod.POST)
-    public Object edit(HttpServletRequest request) {
-        try {
-            Map<String, Object> params = Request.getInstance(request).getParams();
-            Role role;
-            if (Util.parseInt(params.get("id")) != 0) {
-                role = (Role) Db.table(Role.class).where("id", params.get("id")).find();
-            } else {
-                params.remove("id");
-                role = new Role();
-            }
-            role.load(params);
-            Db.table(Role.class).save(role);
-            return this.success("操作成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object edit(HttpServletRequest request) throws Exception {
+        Map<String, Object> params = Request.getInstance(request).getParams();
+        Role role;
+        if (Util.parseInt(params.get("id")) != 0) {
+            role = (Role) Db.table(Role.class).where("id", params.get("id")).find();
+        } else {
+            params.remove("id");
+            role = new Role();
         }
+        role.load(params);
+        Db.table(Role.class).save(role);
+        return this.success("操作成功");
     }
 
     @ResponseBody
     @RequestMapping(value = "system/role/set-status", method = RequestMethod.POST)
-    public Object setStatus(HttpServletRequest request) {
-        try {
-            String id = request.getParameter("id");
-            if (Util.parseInt(id) == 0) {
-                throw new Exception("参数有误");
-            }
-            Db.table(Role.class).where("id", id).update("status", request.getParameter("status"));
-            return this.success("操作成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object setStatus(HttpServletRequest request) throws Exception {
+        String id = request.getParameter("id");
+        if (Util.parseInt(id) == 0) {
+            throw new Exception("参数有误");
         }
+        Db.table(Role.class).where("id", id).update("status", request.getParameter("status"));
+        return this.success("操作成功");
     }
 
     @RequestMapping(value = "system/role/set-role-admin", method = RequestMethod.GET)
@@ -109,18 +101,14 @@ public class RoleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "system/role/set-role-admin", method = RequestMethod.POST)
-    public Object setRoleAdmin(HttpServletRequest request) {
-        try {
-            String id = request.getParameter("id");
-            if (Util.parseInt(id) == 0) {
-                throw new Exception("参数有误");
-            }
-            Map<String, Object> params = Request.getInstance(request).getParams();
-            this.roleService.setRoleAdmin(params);
-            return this.success("设置成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object setRoleAdmin(HttpServletRequest request) throws Exception {
+        String id = request.getParameter("id");
+        if (Util.parseInt(id) == 0) {
+            throw new Exception("参数有误");
         }
+        Map<String, Object> params = Request.getInstance(request).getParams();
+        this.roleService.setRoleAdmin(params);
+        return this.success("设置成功");
     }
 
     @RequestMapping(value = "system/role/set-role-menu", method = RequestMethod.GET)
@@ -150,17 +138,13 @@ public class RoleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "system/role/set-role-menu", method = RequestMethod.POST)
-    public Object setRoleMenu(HttpServletRequest request) {
-        try {
-            String id = request.getParameter("id");
-            if (Util.parseInt(id) == 0) {
-                throw new Exception("参数有误");
-            }
-            Map<String, Object> params = Request.getInstance(request).getParams();
-            this.roleService.setRoleMenu(params);
-            return this.success("设置成功");
-        } catch (Exception e) {
-            return this.error(e.getMessage());
+    public Object setRoleMenu(HttpServletRequest request) throws Exception {
+        String id = request.getParameter("id");
+        if (Util.parseInt(id) == 0) {
+            throw new Exception("参数有误");
         }
+        Map<String, Object> params = Request.getInstance(request).getParams();
+        this.roleService.setRoleMenu(params);
+        return this.success("设置成功");
     }
 }

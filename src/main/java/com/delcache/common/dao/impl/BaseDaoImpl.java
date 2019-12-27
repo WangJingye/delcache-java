@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class BaseDaoImpl implements BaseDao {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    public JdbcTemplate jdbcTemplate;
 
     public int insert(String sql) {
         KeyHolder keyHolder = new GeneratedKeyHolder();

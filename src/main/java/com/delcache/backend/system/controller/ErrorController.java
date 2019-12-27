@@ -1,8 +1,8 @@
 package com.delcache.backend.system.controller;
 
 import com.delcache.backend.common.BaseController;
-import com.delcache.extend.UrlManager;
-import com.delcache.extend.Util;
+import com.delcache.component.UrlManager;
+import com.delcache.component.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,12 +1,15 @@
 package com.delcache.common.entity;
 
-import com.delcache.extend.Util;
+import com.delcache.component.DbIgnore;
+import com.delcache.component.Util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseEntity {
+
+    @DbIgnore
     public Object extra;
 
     public void load(Map<String, Object> map) {

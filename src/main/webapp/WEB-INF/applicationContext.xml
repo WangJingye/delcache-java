@@ -80,5 +80,5 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <bean class="com.delcache.extend.CustomExceptionResolver"/>
+    <bean class="com.delcache.component.CustomExceptionResolver"/>
 </beans>

@@ -1,8 +1,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.delcache.common.entity.Menu" %>
-<%@ page import="com.delcache.extend.Util" %>
+<%@ page import="com.delcache.component.Util" %>
 <%@ page import="org.springframework.util.StringUtils" %>
-<%@ page import="com.delcache.extend.UrlManager" %>
+<%@ page import="com.delcache.component.UrlManager" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%

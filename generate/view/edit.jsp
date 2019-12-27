@@ -1,4 +1,4 @@
-<%@ page import="com.delcache.extend.UrlManager" %>
+<%@ page import="com.delcache.component.UrlManager" %>
 <%@ page import="com.delcache.common.entity.{{model}}" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <form class="form-horizontal col-lg-8 col-sm-8 col-md-6" id="save-form"

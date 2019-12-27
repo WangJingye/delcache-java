@@ -1,4 +1,4 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;

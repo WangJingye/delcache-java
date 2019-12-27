@@ -3,7 +3,7 @@ package com.delcache.backend.common;
 
 import com.delcache.backend.system.service.MenuService;
 import com.delcache.common.entity.SiteInfo;
-import com.delcache.extend.Db;
+import com.delcache.component.Db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.context.request.RequestContextHolder;

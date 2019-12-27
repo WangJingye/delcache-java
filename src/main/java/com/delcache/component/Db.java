@@ -1,10 +1,15 @@
-package com.delcache.extend;
+package com.delcache.component;
 
 import com.delcache.common.dao.BaseDao;
+import com.delcache.common.dao.impl.BaseDaoImpl;
+import com.delcache.common.entity.BaseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.ContextLoader;
 
-import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -21,28 +26,75 @@ public class Db {
 
     private String order;
 
-    private List<String> fields;
-
     private String limit;
 
     private String select;
 
     private String table;
 
+    private Class clazz;
     private String primaryKey;
 
-    private Class clazz;
+    private List<String> methodList;
+
+    private Field[] fields;
 
     public static Db table(Class clazz) {
+        return table(clazz, true);
+    }
+
+    /**
+     * @param clazz
+     * @param isSpring
+     * @return
+     */
+    public static Db table(Class clazz, boolean isSpring) {
         Db db = new Db();
-        db.dao = ContextLoader.getCurrentWebApplicationContext().getBeansOfType(BaseDao.class).get("baseDaoImpl");
+        if (!isSpring) {
+            //不依赖spring执行，需要手动赋值dao
+            BaseDaoImpl dao = new BaseDaoImpl();
+            dao.jdbcTemplate = new JdbcTemplate(db.getDataSource());
+            db.dao = dao;
+        } else {
+            db.dao = ContextLoader.getCurrentWebApplicationContext().getBeansOfType(BaseDao.class).get("baseDaoImpl");
+        }
         db.clazz = clazz;
         db.table = "tbl_" + Util.toUnderlineString(clazz.getSimpleName());
         db.where = new LinkedHashMap<>();
         db.order = "";
         db.limit = "";
         db.select = "*";
+        db.fields = clazz.getDeclaredFields();
+        for (Field field : db.fields) {
+            PrimaryKey f = field.getAnnotation(PrimaryKey.class);
+            if (f != null) {
+                db.primaryKey = Util.toUnderlineString(field.getName());
+                break;
+            }
+        }
+        Method[] methods = clazz.getDeclaredMethods();
+        List<String> methodList = new ArrayList<>();
+        for (Method method : methods) {
+            methodList.add(method.getName());
+        }
+        db.methodList = methodList;
         return db;
+    }
+
+    DriverManagerDataSource getDataSource() {
+        Properties properties = new Properties();
+        InputStream inputStream = Object.class.getResourceAsStream("/application.properties");
+        try {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(properties.get("jdbc.driver").toString());
+        dataSource.setUrl(properties.get("jdbc.url").toString());
+        dataSource.setUsername(properties.get("jdbc.username").toString());
+        dataSource.setPassword(properties.get("jdbc.password").toString());
+        return dataSource;
     }
 
     public Db where(String key, Object value, String restriction) {
@@ -154,6 +206,9 @@ public class Db {
     }
 
     public Object find() {
+        if (this.limit.isEmpty()) {
+            this.limit = " limit 1";
+        }
         return dao.find(this.sql(), this.clazz);
     }
 
@@ -190,17 +245,22 @@ public class Db {
      * 保存数据（插入或更新）
      */
     public void save(Object t) throws Exception {
-        this.getField();
-        String method = "get" + Util.toCamelName(primaryKey);
-        Method getMethod = clazz.getMethod(method);
+        String method = "get" + Util.toCamelName(this.primaryKey);
+        Method getMethod = this.clazz.getMethod(method);
         Object value = getMethod.invoke(t);
         if (Util.parseInt(value) == 0) {
             int id = dao.insert(buildInsertSql(t));
-            method = "set" + Util.toCamelName(primaryKey);
-            Method setMethod = clazz.getMethod(method, int.class);
+            if (id == 0) {
+                throw new Exception("数据添加失败");
+            }
+            method = "set" + Util.toCamelName(this.primaryKey);
+            Method setMethod = this.clazz.getMethod(method, int.class);
             setMethod.invoke(t, id);
         } else {
-            dao.update(buildUpdateSql(t));
+            int i = dao.update(buildUpdateSql(t));
+            if (i == 0) {
+                throw new Exception("数据保存失败");
+            }
         }
     }
 
@@ -227,14 +287,18 @@ public class Db {
      * 更新
      */
     public void update(String key, Object value) {
-        this.getField();
         if (StringUtils.isEmpty(value)) {
             value = "";
         }
         StringBuilder sql = new StringBuilder("update ").append(this.table).append(" set ");
         sql.append("`").append(key).append("` = '").append(value.toString()).append("'");
-        if (this.fields.contains("update_time")) {
-            sql.append(", update_time = '").append(Util.time()).append("'");
+        try {
+            Field field = this.clazz.getDeclaredField("updateTime");
+            if (field != null) {
+                sql.append(", update_time = '").append(Util.time()).append("'");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         sql.append(this.whereSql());
         dao.update(sql.toString());
@@ -253,28 +317,24 @@ public class Db {
 
     public void multiInsert(Object entities, String ignore) {
         try {
-            this.getField();
             StringBuilder sql = new StringBuilder("insert ").append(ignore).append(" into ").append(this.table);
             List<String> keys = new ArrayList<>();
             Map<String, Method> methodMap = new HashMap<>();
-            Method[] methods = clazz.getDeclaredMethods();
-            List<String> methodList = new ArrayList<>();
             List<String> entityParams = new ArrayList<>();
-            for (Method method : methods) {
-                methodList.add(method.getName());
-            }
             //获取key
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
+            for (Field field : this.fields) {
                 String column = Util.toUnderlineString(field.getName());
+                //主键不进行insert
                 if (column.equals(this.primaryKey)) {
                     continue;
                 }
-                if (!this.fields.contains(column)) {
+                //数据库字段不存在
+                DbIgnore dbIgnore = field.getAnnotation(DbIgnore.class);
+                if (dbIgnore != null) {
                     continue;
                 }
                 String method = "get" + (field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
-                if (!methodList.contains(method)) {
+                if (!this.methodList.contains(method)) {
                     continue;
                 }
                 keys.add(column);
@@ -282,20 +342,23 @@ public class Db {
             //获取 value
             for (Object entity : (List<Object>) entities) {
                 List<String> params = new ArrayList<>();
-                for (Field field : fields) {
+                for (Field field : this.fields) {
                     String column = Util.toUnderlineString(field.getName());
+                    //主键不进行insert
                     if (column.equals(this.primaryKey)) {
                         continue;
                     }
-                    if (!this.fields.contains(column)) {
+                    //数据库字段不存在
+                    DbIgnore dbIgnore = field.getAnnotation(DbIgnore.class);
+                    if (dbIgnore != null) {
                         continue;
                     }
                     String method = "get" + (field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
-                    if (!methodList.contains(method)) {
+                    if (!this.methodList.contains(method)) {
                         continue;
                     }
                     if (!methodMap.containsKey(method)) {
-                        methodMap.put(method, clazz.getMethod(method));
+                        methodMap.put(method, this.clazz.getMethod(method));
                     }
                     Method getMethod = methodMap.get(method);
                     Object value = getMethod.invoke(entity);
@@ -326,44 +389,30 @@ public class Db {
         dao.delete(sql);
     }
 
-    public void getField() {
-        if (this.fields == null || this.fields.size() == 0) {
-            String sql = "show columns from " + this.table;
-            List<Map<String, Object>> fields = (List<Map<String, Object>>) dao.findAll(sql, Map.class);
-            for (Map<String, Object> field : fields) {
-                if ("PRI".equals(field.get("Key"))) {
-                    this.primaryKey = field.get("Field").toString();
-                    break;
-                }
-            }
-            this.fields = Util.arrayColumn(fields, "Field");
-        }
-    }
-
     public String buildInsertSql(Object entity) {
         StringBuilder sql = new StringBuilder("insert into ").append(this.table).append("(`");
         List<String> params = new ArrayList<>();
         List<String> keys = new ArrayList<>();
         //获取属性信息
         try {
-            Field[] fields = clazz.getDeclaredFields();
-            Method[] methods = clazz.getDeclaredMethods();
-            List<String> methodList = new ArrayList<>();
-            for (Method method : methods) {
-                methodList.add(method.getName());
-            }
-            for (Field field : fields) {
+            for (Field field : this.fields) {
                 String column = Util.toUnderlineString(field.getName());
+                //主键不进行insert
                 if (column.equals(this.primaryKey)) {
                     continue;
                 }
-                if (!this.fields.contains(column)) {
+                //数据库字段不存在
+                DbIgnore dbIgnore = field.getAnnotation(DbIgnore.class);
+                if (dbIgnore != null) {
                     continue;
                 }
                 String method = "get" + (field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
-                if (methodList.contains(method)) {
-                    Method getMethod = clazz.getMethod(method);
+                if (this.methodList.contains(method)) {
+                    Method getMethod = this.clazz.getMethod(method);
                     Object value = getMethod.invoke(entity);
+                    if (value == null) {
+                        continue;
+                    }
                     if (StringUtils.isEmpty(value)) {
                         value = "";
                     }
@@ -393,20 +442,16 @@ public class Db {
         List<String> where = new ArrayList<>();
         //获取属性信息
         try {
-            Field[] fields = clazz.getDeclaredFields();
-            Method[] methods = clazz.getDeclaredMethods();
-            List<String> methodList = new ArrayList<>();
-            for (Method method : methods) {
-                methodList.add(method.getName());
-            }
-            for (Field field : fields) {
-                String column = Util.toUnderlineString(field.getName());
-                if (!this.fields.contains(column)) {
+            for (Field field : this.fields) {
+                //数据库字段不存在
+                DbIgnore dbIgnore = field.getAnnotation(DbIgnore.class);
+                if (dbIgnore != null) {
                     continue;
                 }
+                String column = Util.toUnderlineString(field.getName());
                 String method = "get" + (field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
-                if (methodList.contains(method)) {
-                    Method getMethod = clazz.getMethod(method);
+                if (this.methodList.contains(method)) {
+                    Method getMethod = this.clazz.getMethod(method);
                     Object value = getMethod.invoke(entity);
                     if (column.equals(this.primaryKey)) {
                         where.add("`" + column + "` = '" + value + "'");
@@ -431,5 +476,4 @@ public class Db {
                 .append(String.join(" and ", where.toArray(new String[0])));
         return sql.toString();
     }
-
 }

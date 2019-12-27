@@ -3,7 +3,7 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.delcache.common.entity.Role" %>
-<%@ page import="com.delcache.extend.Util" %>
+<%@ page import="com.delcache.component.Util" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <div class="btn-box clearfix">
     <a href="<%= UrlManager.createUrl("system/role/edit") %>">
