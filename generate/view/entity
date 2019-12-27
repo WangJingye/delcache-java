@@ -2,5 +2,6 @@ package com.delcache.common.entity;
 
 public class {{model}} extends BaseEntity {
 
+    @PrimaryKey
     private int {{primaryKey}};{{declare}}{{setter-getter}}
 }
