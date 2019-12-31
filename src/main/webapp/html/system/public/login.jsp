@@ -18,6 +18,11 @@
                     <input type="password" class="form-control" name="password" placeholder="密码">
                 </div>
             </div>
+            <div class="form-group captcha-box">
+                <input type="text" class="form-control captcha" name="captcha" placeholder="验证码" maxlength="4">
+                <img src="<%= UrlManager.createUrl("captcha") %>"
+                     data-src="<%= UrlManager.createUrl("captcha") %>">
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary" style="width: 100%">登录</button>
             </div>

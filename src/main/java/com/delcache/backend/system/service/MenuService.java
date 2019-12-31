@@ -77,8 +77,8 @@ public class MenuService extends BaseService {
         //不是超级管理员只能获取有权限的数据
         if (user.getIdentity() == 0) {
             String sql = "select a.* from tbl_role_menu as a left join tbl_role_admin as b on a.role_id = b.role_id where b.admin_id = " + user.getAdminId().toString() + ";";
-            List<RoleMenu> roleMenus = (List<RoleMenu>) Db.table(RoleMenu.class).findAll(sql);
-            selector.where("id", Util.arrayColumn(roleMenus, "menuId"), "in");
+            List<Map<String, Object>> roleMenus = (List<Map<String, Object>>) Db.table(Map.class).findAll(sql);
+            selector.where("id", Util.arrayColumn(roleMenus, "menu_id"), "in");
         }
         return (List<Menu>) selector.order("sort desc,create_time asc").findAll();
     }

@@ -6,6 +6,7 @@ import com.delcache.common.entity.SiteInfo;
 import com.delcache.component.Db;
 import com.delcache.component.Encrypt;
 import com.delcache.component.Util;
+import com.delcache.extend.captcha.Captcha;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -38,6 +39,11 @@ public class PublicController extends BaseController {
         if (admin == null || !admin.getPassword().equals(Encrypt.encryptPassword(password, admin.getSalt()))) {
             throw new Exception("用户名密码有误");
         }
+        String verifyCode = (String) request.getSession().getAttribute("verifyCode");
+        String captcha = request.getParameter("captcha");
+        if (StringUtils.isEmpty(captcha) || !verifyCode.toLowerCase().equals(captcha.toLowerCase())) {
+            throw new Exception("验证码有误");
+        }
         if (admin.getStatus() == 0) {
             throw new Exception("您的账号已禁用，请联系管理员～");
         }
@@ -54,5 +60,10 @@ public class PublicController extends BaseController {
             request.getSession().removeAttribute("user");
         }
         response.sendRedirect("/");
+    }
+
+    @RequestMapping(value = "captcha")
+    public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Captcha.showImage(request, response);
     }
 }

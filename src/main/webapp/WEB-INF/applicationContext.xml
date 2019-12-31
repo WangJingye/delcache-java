@@ -13,15 +13,12 @@ http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd
 http://www.springframework.org/schema/mvc
 http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-    <!-- 注解扫描包 -->
+    <!-- 注解扫描路径 -->
     <context:component-scan base-package="com.delcache"/>
-
     <!-- 开启注解 -->
     <mvc:annotation-driven/>
-
     <!-- 引入属性文件 -->
     <context:property-placeholder location="classpath:application.properties"/>
-
     <!-- 配置数据源  这里class可以使用不同的驱动-->
     <bean id="dataSource" name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="${jdbc.driver}"/>
@@ -38,9 +35,15 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <property name="acquireIncrement" value="${ds.acquireIncrement}"/>
         <!-- 空闲检查时间间隔， 每隔60秒检查连接池里的空闲连接 ，单位是秒-->
         <property name="idleConnectionTestPeriod" value="${ds.idleConnectionTestPeriod}"/>
+        <!--JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements
+     属于单个connection而不是整个连接池。所以设置这个参数需要考虑到多方面的因素。
+     如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0-->
+        <!--<property name="maxStatements" value="${ds.maxStatements}"/>-->
+        <!--连接池用完时客户调用getConnection()后等待获取连接的时间，单位：毫秒。超时后会抛出-->
+        <!--SQLEXCEPTION，如果设置0，则无限等待。Default:0-->
+        <!--<property name="checkoutTimeout" value="${ds.checkoutTimeout}"/>-->
     </bean>
-
-
+    <!--注入JDBC，使用数据库连接池-->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
@@ -50,7 +53,7 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
+    <!-- 路由解析 @RequestMapping -->
     <bean name="handlerMapping"
           class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
     </bean>
@@ -64,12 +67,13 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="40960"/>
     </bean>
-    <bean id="ViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <!-- 视图解析器 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/html/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-
+    <!-- 拦截器 -->
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
@@ -79,6 +83,6 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
             <bean class="com.delcache.Interceptor.AuthFilter"/>
         </mvc:interceptor>
     </mvc:interceptors>
-
+    <!-- 内部错误处理 -->
     <bean class="com.delcache.component.CustomExceptionResolver"/>
 </beans>
